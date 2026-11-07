@@ -52,7 +52,7 @@ public class CustomerMenu {
                     break;
 
                 case 4:
-                    System.out.println("Update Customer selected.");
+                    updateCustomer();
                     break;
 
                 case 5:
@@ -145,7 +145,37 @@ public class CustomerMenu {
         } else {
             System.out.println("Customer not found!");
         }
+
     }
 
+    // Update customer
+    private void updateCustomer() 
+    {
+        System.out.println("Update Customer selected.");
+
+        System.out.print("\nEnter Customer ID: ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+
+        Customer customer = customerService.findCustomerById(id);
+
+        if (customer == null) {
+            System.out.println("Customer not found!");
+            return;
+        }
+
+        System.out.print("New Full Name: ");
+        String name = scanner.nextLine();
+
+        System.out.print("New Contact Number: ");
+        String contact = scanner.nextLine();
+
+        System.out.print("New Email: ");
+        String email = scanner.nextLine();
+
+        if (customerService.updateCustomer(id, name, contact, email)) {
+            System.out.println("Customer updated successfully!");
+        }
+    }
 
 }
