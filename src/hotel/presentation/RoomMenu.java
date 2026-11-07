@@ -41,7 +41,7 @@ public class RoomMenu {
                     viewAvailableRooms();
                     break;
                 case 3:
-                    System.out.println("Add New Room");
+                    addRoom();
                     break;
                 case 4:
                     System.out.println("Update Room Information");
@@ -94,4 +94,30 @@ public class RoomMenu {
         System.out.println("View Available Rooms");
         displayRooms(roomService.getAvailableRooms());
     }
+
+    // Add New Room
+    private void addRoom() 
+    {
+        System.out.println("Add New Room");
+
+        System.out.print("Enter Room Number: ");
+        int roomNumber = scanner.nextInt();
+
+        scanner.nextLine();
+
+        System.out.print("Enter Room Type: ");
+        String roomType = scanner.nextLine();
+
+        System.out.print("Enter Room Price: ");
+        double price = scanner.nextDouble();
+
+        Room room = new Room(roomNumber, roomType, price, true);
+
+        if (roomService.addRoom(room)) {
+            System.out.println("Room added successfully!");
+        } else {
+            System.out.println("Room number already exists!");
+        }
+    }
+
 }
