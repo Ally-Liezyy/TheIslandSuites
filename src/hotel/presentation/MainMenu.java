@@ -9,7 +9,7 @@ public class MainMenu {
     private Scanner scanner;
         private RoomService roomService;
 
-    public MainMenu(Scanner scanner) {
+    public MainMenu(Scanner scanner, RoomService roomService) {
         this.scanner = scanner;
         this.roomService = roomService;
     }
@@ -32,7 +32,7 @@ public class MainMenu {
             switch (choice) {
                 case 1:
                     System.out.println("Room Management selected.");
-                    
+
                     RoomMenu roomMenu = new RoomMenu(scanner, roomService);
                     roomMenu.display();
 

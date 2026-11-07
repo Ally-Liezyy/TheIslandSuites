@@ -3,6 +3,7 @@ package hotel.config;
 import java.util.Scanner;
 
 import hotel.service.LogInService;
+import hotel.service.RoomService;
 import hotel.presentation.LogInMenu;
 import hotel.presentation.MainMenu;
 
@@ -19,6 +20,7 @@ public class SystemManager {
     public void start() {
 
         LogInService logInService = new LogInService();
+        RoomService roomService = new RoomService();
 
         LogInMenu logInMenu =
                 new LogInMenu(scanner, logInService);
@@ -26,7 +28,7 @@ public class SystemManager {
         if (logInMenu.display()) {
             System.out.println("\nOpening Main Menu...");
 
-             MainMenu mainMenu = new MainMenu(scanner);
+             MainMenu mainMenu = new MainMenu(scanner, roomService);
             mainMenu.display();
 
         } else {
