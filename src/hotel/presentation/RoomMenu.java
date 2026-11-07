@@ -1,6 +1,9 @@
 package hotel.presentation;
 
 import java.util.Scanner;
+import java.util.ArrayList;
+
+import hotel.model.Room;
 import hotel.service.RoomService;
 
 
@@ -32,10 +35,10 @@ public class RoomMenu {
 
             switch (choice) {
                 case 1:
-                    System.out.println("View All Rooms");
+                    viewAllRooms();
                     break;
                 case 2:
-                    System.out.println("View Available Rooms");
+                    viewAvailableRooms();
                     break;
                 case 3:
                     System.out.println("Add New Room");
@@ -57,5 +60,38 @@ public class RoomMenu {
             }
 
         } while (choice != 7);
+    }
+
+    private void displayRooms(ArrayList<Room> rooms) 
+    {
+
+        if (rooms.isEmpty()) 
+        {
+            System.out.println("No rooms found.");
+            return;
+        }
+
+        for (Room room : rooms) 
+        {
+            System.out.println("\nRoom Number: " + room.getRoomNumber());
+            System.out.println("Room Type: " + room.getRoomType());
+            System.out.println("Price: PHP " + room.getPrice());
+            System.out.println("Status: " + (room.isAvailable() ? "Available" : "Occupied"));
+        }
+    }
+
+     // View All Rooms
+    private void viewAllRooms() 
+    {
+        System.out.println("View All Rooms");
+        displayRooms(roomService.getAllRooms());
+
+    }
+
+    // View Available Rooms
+    private void viewAvailableRooms() 
+    {
+        System.out.println("View Available Rooms");
+        displayRooms(roomService.getAvailableRooms());
     }
 }
