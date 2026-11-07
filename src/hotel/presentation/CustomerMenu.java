@@ -1,6 +1,8 @@
 package hotel.presentation;
 
 import java.util.Scanner;
+
+import hotel.model.Customer;
 import hotel.service.CustomerService;
 
 public class CustomerMenu {
@@ -37,7 +39,7 @@ public class CustomerMenu {
             switch (choice) {
 
                 case 1:
-                    System.out.println("Add Customer selected.");
+                    addCustomer();
                     break;
 
                 case 2:
@@ -65,6 +67,35 @@ public class CustomerMenu {
             }
 
         } while (choice != 6);
+    }
+
+     // Add customer
+    private void addCustomer() 
+    {
+        System.out.println("Add Customer selected.");
+
+        System.out.println("\n--- ADD NEW CUSTOMER ---");
+
+        System.out.print("Customer ID: ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+
+        System.out.print("Full Name: ");
+        String name = scanner.nextLine();
+
+        System.out.print("Contact Number: ");
+        String contact = scanner.nextLine();
+
+        System.out.print("Email: ");
+        String email = scanner.nextLine();
+
+        Customer customer = new Customer(id, name, contact, email);
+
+        if (customerService.addCustomer(customer)) {
+            System.out.println("Customer added successfully!");
+        } else {
+            System.out.println("Customer ID already exists!");
+        }
     }
 
 }
