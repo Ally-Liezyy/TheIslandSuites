@@ -45,10 +45,9 @@ public class RoomMenu {
                     break;
                 case 4:
                     updateRoom();
-                    System.out.println("Update Room Information");
                     break;
                 case 5:
-                    System.out.println("Delete Room");
+                    deleteRoom();
                     break;
                 case 6:
                     System.out.println("Search Room");
@@ -143,6 +142,23 @@ public class RoomMenu {
         if (roomService.updateRoom(roomNumber, roomType, price, available)) 
         {
             System.out.println("Room updated successfully!");
+        } else 
+        {
+            System.out.println("Room not found!");
+        }
+    }
+
+     // Delete Room
+    private void deleteRoom() 
+    {
+        System.out.println("Delete Room");
+        
+        System.out.print("Enter Room Number: ");
+        int roomNumber = scanner.nextInt();
+
+        if (roomService.deleteRoom(roomNumber)) 
+        {
+            System.out.println("Room deleted successfully!");
         } else 
         {
             System.out.println("Room not found!");
