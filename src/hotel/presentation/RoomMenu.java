@@ -50,7 +50,7 @@ public class RoomMenu {
                     deleteRoom();
                     break;
                 case 6:
-                    System.out.println("Search Room");
+                    searchRoom();
                     break;
                 case 7:
                     System.out.println("Returning to Main Menu...");
@@ -152,7 +152,7 @@ public class RoomMenu {
     private void deleteRoom() 
     {
         System.out.println("Delete Room");
-        
+
         System.out.print("Enter Room Number: ");
         int roomNumber = scanner.nextInt();
 
@@ -164,5 +164,27 @@ public class RoomMenu {
             System.out.println("Room not found!");
         }
     }
+
+    //Search Room
+     private void searchRoom()
+   {
+        System.out.println("Search Room");
+
+        System.out.print("Enter Room Number: ");
+        int roomNumber = scanner.nextInt();
+
+        Room room = roomService.searchRoom(roomNumber);
+
+        if (room != null)
+        {
+            System.out.println("\nRoom Number: " + room.getRoomNumber());
+            System.out.println("Room Type: " + room.getRoomType());
+            System.out.println("Price: PHP " + room.getPrice());
+            System.out.println("Status: " + (room.isAvailable() ? "Available" : "Occupied"));
+        } else
+        {
+            System.out.println("Room not found!");
+        }
+   }
 
 }
