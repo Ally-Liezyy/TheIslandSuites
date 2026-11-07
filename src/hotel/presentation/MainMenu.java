@@ -1,0 +1,55 @@
+package hotel.presentation;
+
+import java.util.Scanner;
+
+public class MainMenu {
+
+    private Scanner scanner;
+
+    public MainMenu(Scanner scanner) {
+        this.scanner = scanner;
+    }
+
+    public void display() {
+
+        int choice;
+
+        do {
+            System.out.println("\n===== THE ISLAND SUITES =====");
+            System.out.println("1. Room Management");
+            System.out.println("2. Customer Management");
+            System.out.println("3. Booking Management");
+            System.out.println("4. Payment Management");
+            System.out.println("5. Logout");
+
+            System.out.print("Enter your choice: ");
+            choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    System.out.println("Room Management selected.");
+                    break;
+
+                case 2:
+                    System.out.println("Customer Management selected.");
+                    break;
+
+                case 3:
+                    System.out.println("Booking Management selected.");
+                    break;
+
+                case 4:
+                    System.out.println("Payment Management selected.");
+                    break;
+
+                case 5:
+                    System.out.println("Logging out...");
+                    break;
+
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+
+        } while (choice != 5);
+    }
+}

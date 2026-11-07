@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 import hotel.service.LogInService;
 import hotel.presentation.LogInMenu;
+import hotel.presentation.MainMenu;
 
 public class SystemManager {
 
@@ -24,6 +25,8 @@ public class SystemManager {
 
         if (logInMenu.display()) {
             System.out.println("\nOpening Main Menu...");
+
+
         } else {
             System.out.println("\nAccess Denied!");
         }
