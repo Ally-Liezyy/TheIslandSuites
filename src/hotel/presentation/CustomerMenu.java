@@ -1,5 +1,6 @@
 package hotel.presentation;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import hotel.model.Customer;
@@ -95,6 +96,29 @@ public class CustomerMenu {
             System.out.println("Customer added successfully!");
         } else {
             System.out.println("Customer ID already exists!");
+        }
+    }
+
+     // View all customers
+    private void viewCustomers() {
+
+        System.out.println("\n--- CUSTOMER LIST ---");
+
+        ArrayList<Customer> customers =
+                customerService.getAllCustomers();
+
+        if (customers.isEmpty()) {
+            System.out.println("No customers found.");
+            return;
+        }
+
+        for (Customer customer : customers) {
+
+            System.out.println("-------------------------");
+            System.out.println("Customer ID: " + customer.getCustomerId());
+            System.out.println("Name: " + customer.getName());
+            System.out.println("Contact: " + customer.getContactNumber());
+            System.out.println("Email: " + customer.getEmail());
         }
     }
 
