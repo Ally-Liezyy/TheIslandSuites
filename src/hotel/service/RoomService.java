@@ -20,6 +20,24 @@ public class RoomService {
       return true;
     }
      
+    // View all rooms
+    public ArrayList<Room> getAllRooms() {
+    return rooms;
+    }
+
+    // View available rooms
+    public ArrayList<Room> getAvailableRooms() {
+
+    ArrayList<Room> availableRooms = new ArrayList<>();
+
+    for (Room room : rooms) {
+        if (room.isAvailable()) {
+            availableRooms.add(room);
+        }
+    }
+
+    return availableRooms;
+}
 }
 
 
