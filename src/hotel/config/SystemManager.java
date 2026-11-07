@@ -26,6 +26,8 @@ public class SystemManager {
         if (logInMenu.display()) {
             System.out.println("\nOpening Main Menu...");
 
+             MainMenu mainMenu = new MainMenu(scanner);
+            mainMenu.display();
 
         } else {
             System.out.println("\nAccess Denied!");
