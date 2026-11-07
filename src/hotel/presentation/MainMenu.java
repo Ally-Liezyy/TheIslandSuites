@@ -2,12 +2,16 @@ package hotel.presentation;
 
 import java.util.Scanner;
 
+import hotel.service.RoomService;
+
 public class MainMenu {
 
     private Scanner scanner;
+        private RoomService roomService;
 
     public MainMenu(Scanner scanner) {
         this.scanner = scanner;
+        this.roomService = roomService;
     }
 
     public void display() {
@@ -28,6 +32,10 @@ public class MainMenu {
             switch (choice) {
                 case 1:
                     System.out.println("Room Management selected.");
+                    
+                    RoomMenu roomMenu = new RoomMenu(scanner, roomService);
+                    roomMenu.display();
+
                     break;
 
                 case 2:
