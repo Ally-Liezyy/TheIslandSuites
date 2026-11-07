@@ -44,6 +44,7 @@ public class RoomMenu {
                     addRoom();
                     break;
                 case 4:
+                    updateRoom();
                     System.out.println("Update Room Information");
                     break;
                 case 5:
@@ -117,6 +118,34 @@ public class RoomMenu {
             System.out.println("Room added successfully!");
         } else {
             System.out.println("Room number already exists!");
+        }
+    }
+
+    //Update Room
+    private void updateRoom() 
+    {
+        System.out.println("Update Room Information");
+
+        System.out.print("Enter Room Number: ");
+        int roomNumber = scanner.nextInt();
+
+        scanner.nextLine();
+
+        System.out.print("Enter New Room Type: ");
+        String roomType = scanner.nextLine();
+
+        System.out.print("Enter New Price: ");
+        double price = scanner.nextDouble();
+
+        System.out.print("Is the room available? (true/false): ");
+        boolean available = scanner.nextBoolean();
+
+        if (roomService.updateRoom(roomNumber, roomType, price, available)) 
+        {
+            System.out.println("Room updated successfully!");
+        } else 
+        {
+            System.out.println("Room not found!");
         }
     }
 
