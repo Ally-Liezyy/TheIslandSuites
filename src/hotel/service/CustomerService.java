@@ -23,4 +23,12 @@ public class CustomerService {
         customers.add(customer);
         return true;
     }
+
+     // Get all customers
+    public ArrayList<Customer> getAllCustomers() 
+    {
+        return customers;
+    }
+
 }
+
