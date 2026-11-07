@@ -30,5 +30,18 @@ public class CustomerService {
         return customers;
     }
 
+     // Search customer by ID
+    public Customer findCustomerById(int customerId) {
+
+        for (Customer customer : customers) {
+
+            if (customer.getCustomerId() == customerId) {
+                return customer;
+            }
+        }
+
+        return null;
+    }
+
 }
 
