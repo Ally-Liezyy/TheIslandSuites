@@ -44,11 +44,11 @@ public class CustomerMenu {
                     break;
 
                 case 2:
-                    System.out.println("View Customers selected.");
+                    viewCustomers();
                     break;
 
                 case 3:
-                    System.out.println("Search Customer selected.");
+                    searchCustomer();
                     break;
 
                 case 4:
@@ -102,6 +102,8 @@ public class CustomerMenu {
      // View all customers
     private void viewCustomers() {
 
+        System.out.println("View Customers selected.");
+
         System.out.println("\n--- CUSTOMER LIST ---");
 
         ArrayList<Customer> customers =
@@ -121,5 +123,29 @@ public class CustomerMenu {
             System.out.println("Email: " + customer.getEmail());
         }
     }
+
+      // Search customer
+    private void searchCustomer() {
+        System.out.println("Search Customer selected.");
+
+        System.out.print("\nEnter Customer ID: ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+
+        Customer customer = customerService.findCustomerById(id);
+
+        if (customer != null) {
+
+            System.out.println("\nCustomer Found!");
+            System.out.println("Customer ID: " + customer.getCustomerId());
+            System.out.println("Name: " + customer.getName());
+            System.out.println("Contact: " + customer.getContactNumber());
+            System.out.println("Email: " + customer.getEmail());
+
+        } else {
+            System.out.println("Customer not found!");
+        }
+    }
+
 
 }
