@@ -59,5 +59,18 @@ public class CustomerService {
 
         return true;
     }
+
+     // Delete customer
+    public boolean deleteCustomer(int customerId) {
+
+        Customer customer = findCustomerById(customerId);
+
+        if (customer == null) {
+            return false;
+        }
+
+        customers.remove(customer);
+        return true;
+    }
 }
 
