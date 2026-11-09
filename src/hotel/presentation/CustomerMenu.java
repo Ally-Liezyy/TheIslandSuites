@@ -56,7 +56,7 @@ public class CustomerMenu {
                     break;
 
                 case 5:
-                    System.out.println("Delete Customer selected.");
+                    deleteCustomer();
                     break;
 
                 case 6:
@@ -178,4 +178,20 @@ public class CustomerMenu {
         }
     }
 
+     // Delete customer
+    private void deleteCustomer() {
+
+        System.out.println("Delete Customer selected.");
+
+
+        System.out.print("\nEnter Customer ID: ");
+        int id = scanner.nextInt();
+        scanner.nextLine();
+
+        if (customerService.deleteCustomer(id)) {
+            System.out.println("Customer deleted successfully!");
+        } else {
+            System.out.println("Customer not found!");
+        }
+    }
 }
