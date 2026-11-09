@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 import hotel.service.LogInService;
 import hotel.service.RoomService;
+import  hotel.service.CustomerService;
 import hotel.presentation.LogInMenu;
 import hotel.presentation.MainMenu;
 
@@ -21,6 +22,7 @@ public class SystemManager {
 
         LogInService logInService = new LogInService();
         RoomService roomService = new RoomService();
+        CustomerService customerService = new CustomerService();
 
         LogInMenu logInMenu =
                 new LogInMenu(scanner, logInService);
@@ -28,7 +30,7 @@ public class SystemManager {
         if (logInMenu.display()) {
             System.out.println("\nOpening Main Menu...");
 
-             MainMenu mainMenu = new MainMenu(scanner, roomService);
+             MainMenu mainMenu = new MainMenu(scanner, roomService, customerService);
             mainMenu.display();
 
         } else {

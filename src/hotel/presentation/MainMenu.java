@@ -3,15 +3,19 @@ package hotel.presentation;
 import java.util.Scanner;
 
 import hotel.service.RoomService;
+import hotel.service.CustomerService;
 
 public class MainMenu {
 
     private Scanner scanner;
-        private RoomService roomService;
+    private RoomService roomService;
+    private CustomerService customerService;
+    
 
-    public MainMenu(Scanner scanner, RoomService roomService) {
+    public MainMenu(Scanner scanner, RoomService roomService, CustomerService customerService) {
         this.scanner = scanner;
         this.roomService = roomService;
+        this.customerService = customerService;
     }
 
     public void display() {
@@ -40,6 +44,8 @@ public class MainMenu {
 
                 case 2:
                     System.out.println("Customer Management selected.");
+                    CustomerMenu customerMenu = new CustomerMenu(scanner, customerService);
+                    customerMenu.display();
                     break;
 
                 case 3:
