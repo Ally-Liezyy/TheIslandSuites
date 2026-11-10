@@ -23,4 +23,52 @@ public class Booking {
         this.checkOutDate = checkOutDate;
         this.status = "ACTIVE";
     }
+
+    
+    // Getters
+    public int getBookingId() {
+        return bookingId;
+    }
+
+    public int getCustomerId() {
+        return customerId;
+    }
+
+    public int getRoomNumber() {
+        return roomNumber;
+    }
+
+    public LocalDate getCheckInDate() {
+        return checkInDate;
+    }
+
+    public LocalDate getCheckOutDate() {
+        return checkOutDate;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    // Setters
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
+    }
+
+    public void setRoomNumber(int roomNumber) {
+        this.roomNumber = roomNumber;
+    }
+
+    public void setCheckInDate(LocalDate checkInDate) {
+        this.checkInDate = checkInDate;
+    }
+
+    public void setCheckOutDate(LocalDate checkOutDate) {
+        this.checkOutDate = checkOutDate;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
 }
