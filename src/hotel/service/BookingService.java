@@ -70,4 +70,24 @@ public class BookingService {
         return true;
     }
 
+    
+    // View all bookings
+    public ArrayList<Booking> getAllBookings() {
+        return new ArrayList<>(bookings);
+    }
+
+    // Search booking by ID
+    public Booking searchBooking(int bookingId) {
+
+        for (Booking booking : bookings) {
+
+            if (booking.getBookingId() == bookingId) {
+                return booking;
+            }
+        }
+
+        return null;
+    }
+
+
 }
