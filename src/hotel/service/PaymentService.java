@@ -117,5 +117,19 @@ public class PaymentService {
         return true;
     }
 
+    
+    // Delete payment
+    public boolean deletePayment(int paymentId) {
+
+        Payment payment = searchPayment(paymentId);
+
+        if (payment == null) {
+            return false;
+        }
+
+        payments.remove(payment);
+
+        return true;
+    }
 
 }
