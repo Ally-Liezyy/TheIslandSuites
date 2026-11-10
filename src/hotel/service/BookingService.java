@@ -89,5 +89,71 @@ public class BookingService {
         return null;
     }
 
+    
+    // Update booking information
+    public boolean updateBooking(int bookingId,
+                                 int customerId,
+                                 int roomNumber,
+                                 LocalDate checkInDate,
+                                 LocalDate checkOutDate) {
+
+        Booking booking = searchBooking(bookingId);
+
+        if (booking == null || !booking.getStatus().equals("ACTIVE")) {
+            return false;
+        }
+
+        if (customerId <= 0 || roomNumber <= 0) {
+            return false;
+        }
+
+        // Check customer
+        Customer customer = customerService.findCustomerById(customerId);
+
+        if (customer == null) {
+            return false;
+        }
+
+        // Check dates
+        if (checkInDate == null || checkOutDate == null ||
+            !checkOutDate.isAfter(checkInDate)) {
+            return false;
+        }
+
+        // Check room
+        Room newRoom = roomService.searchRoom(roomNumber);
+
+        if (newRoom == null) {
+            return false;
+        }
+
+        // Check if selected room is available
+        if (booking.getRoomNumber() != roomNumber &&
+            !newRoom.isAvailable()) {
+            return false;
+        }
+
+        // Release previous room if changed
+        if (booking.getRoomNumber() != roomNumber) {
+
+            Room oldRoom = roomService.searchRoom(
+                    booking.getRoomNumber());
+
+            if (oldRoom != null) {
+                oldRoom.setAvailable(true);
+            }
+
+            newRoom.setAvailable(false);
+        }
+
+        // Update booking details
+        booking.setCustomerId(customerId);
+        booking.setRoomNumber(roomNumber);
+        booking.setCheckInDate(checkInDate);
+        booking.setCheckOutDate(checkOutDate);
+
+        return true;
+    }
+
 
 }
