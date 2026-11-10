@@ -148,21 +148,34 @@ public class CustomerMenu {
 
     }
 
+   
     // Update customer
-    private void updateCustomer() 
-    {
-        System.out.println("Update Customer selected.");
+    private void updateCustomer() {
 
-        System.out.print("\nEnter Customer ID: ");
+        System.out.println("\n--- UPDATE CUSTOMER ---");
+
+        System.out.print("Enter Customer ID: ");
         int id = scanner.nextInt();
         scanner.nextLine();
 
+        // Find the customer using the entered ID
         Customer customer = customerService.findCustomerById(id);
 
+        // Check if customer exists
         if (customer == null) {
-            System.out.println("Customer not found!");
-            return;
-        }
+        System.out.println("Customer not found!");
+        return;
+    }
+
+        // Display existing information
+        System.out.println("\n--- CURRENT CUSTOMER INFORMATION ---");
+        System.out.println("Customer ID: " + customer.getCustomerId());
+        System.out.println("Full Name: " + customer.getName());
+        System.out.println("Contact Number: " + customer.getContactNumber());
+        System.out.println("Email: " + customer.getEmail());
+
+        // Ask for new information
+        System.out.println("\n--- ENTER NEW INFORMATION ---");
 
         System.out.print("New Full Name: ");
         String name = scanner.nextLine();
@@ -173,10 +186,14 @@ public class CustomerMenu {
         System.out.print("New Email: ");
         String email = scanner.nextLine();
 
-        if (customerService.updateCustomer(id, name, contact, email)) {
-            System.out.println("Customer updated successfully!");
+        // Save updated information
+        if (customerService.updateCustomer(id, name, contact, email)) 
+        {
+        System.out.println("\nCustomer updated successfully!");
+        } else {
+        System.out.println("\nFailed to update customer!");
         }
-    }
+}
 
      // Delete customer
     private void deleteCustomer() {
