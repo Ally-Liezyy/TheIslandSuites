@@ -4,19 +4,23 @@ import java.util.Scanner;
 
 import hotel.service.RoomService;
 import hotel.service.CustomerService;
+import hotel.service.BookingService;
 
 public class MainMenu {
 
     private Scanner scanner;
     private RoomService roomService;
     private CustomerService customerService;
+    private BookingService bookingService;
     
 
-    public MainMenu(Scanner scanner, RoomService roomService, CustomerService customerService) {
-        this.scanner = scanner;
-        this.roomService = roomService;
-        this.customerService = customerService;
-    }
+   public MainMenu(Scanner scanner, RoomService roomService, CustomerService customerService, BookingService bookingService) {
+
+    this.scanner = scanner;
+    this.roomService = roomService;
+    this.customerService = customerService;
+    this.bookingService = bookingService;
+}
 
     public void display() {
 
@@ -48,10 +52,10 @@ public class MainMenu {
                     customerMenu.display();
                     break;
 
-                case 3:
-                    System.out.println("Booking Management selected.");
+               case 3:
+                    BookingMenu bookingMenu = new BookingMenu(scanner, bookingService);
+                    bookingMenu.display();
                     break;
-
                 case 4:
                     System.out.println("Payment Management selected.");
                     break;
