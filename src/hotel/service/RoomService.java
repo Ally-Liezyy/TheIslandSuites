@@ -5,7 +5,21 @@ import hotel.model.Room;
 
 public class RoomService {
     
-    private ArrayList<Room> rooms = new ArrayList<>();
+   private ArrayList<Room> rooms = new ArrayList<>();
+
+   // Constructor - Add initial hotel rooms
+   public RoomService() {
+
+    rooms.add(new Room(1, "Single Room", 999, true));
+    rooms.add(new Room(2, "Single Room", 999, true));
+
+    rooms.add(new Room(3, "Deluxe Room", 1299, true));
+    rooms.add(new Room(4, "Deluxe Room", 1299, true));
+
+    rooms.add(new Room(5, "Deluxe Premium", 1499, true));
+    rooms.add(new Room(6, "Deluxe Premium", 1499, true));
+
+}
 
      // Add a new room
     public boolean addRoom(Room room) {
