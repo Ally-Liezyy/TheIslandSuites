@@ -5,6 +5,8 @@ import java.util.Scanner;
 import hotel.service.RoomService;
 import hotel.service.CustomerService;
 import hotel.service.BookingService;
+import hotel.service.PaymentService;
+import hotel.presentation.PaymentMenu;
 
 public class MainMenu {
 
@@ -12,15 +14,19 @@ public class MainMenu {
     private RoomService roomService;
     private CustomerService customerService;
     private BookingService bookingService;
+    private PaymentService paymentService;
     
 
-   public MainMenu(Scanner scanner, RoomService roomService, CustomerService customerService, BookingService bookingService) {
+  public MainMenu(Scanner scanner, RoomService roomService, CustomerService customerService, BookingService bookingService, PaymentService paymentService)
+  {
 
     this.scanner = scanner;
     this.roomService = roomService;
     this.customerService = customerService;
     this.bookingService = bookingService;
-}
+    this.paymentService = paymentService;
+  }
+
 
     public void display() {
 
@@ -57,9 +63,9 @@ public class MainMenu {
                     bookingMenu.display();
                     break;
                 case 4:
-                    System.out.println("Payment Management selected.");
+                    PaymentMenu paymentMenu = new PaymentMenu(scanner, paymentService);
+                    paymentMenu.display();
                     break;
-
                 case 5:
                     System.out.println("Logging out...");
                     break;
