@@ -67,4 +67,25 @@ public class PaymentService {
         return true;
     }
 
+    
+    // View all payments
+    public ArrayList<Payment> getAllPayments() {
+
+        return new ArrayList<>(payments);
+    }
+
+    // Search payment by ID
+    public Payment searchPayment(int paymentId) {
+
+        for (Payment payment : payments) {
+
+            if (payment.getPaymentId() == paymentId) {
+                return payment;
+            }
+        }
+
+        return null;
+    }
+
+
 }
