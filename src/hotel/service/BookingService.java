@@ -155,5 +155,46 @@ public class BookingService {
         return true;
     }
 
+    
+    // Cancel booking
+    public boolean cancelBooking(int bookingId) {
+
+        Booking booking = searchBooking(bookingId);
+
+        if (booking == null || !booking.getStatus().equals("ACTIVE")) {
+            return false;
+        }
+
+        Room room = roomService.searchRoom(booking.getRoomNumber());
+
+        if (room != null) {
+            room.setAvailable(true);
+        }
+
+        booking.setStatus("CANCELLED");
+
+        return true;
+    }
+
+    // Complete booking
+    public boolean completeBooking(int bookingId) {
+
+        Booking booking = searchBooking(bookingId);
+
+        if (booking == null || !booking.getStatus().equals("ACTIVE")) {
+            return false;
+        }
+
+        Room room = roomService.searchRoom(booking.getRoomNumber());
+
+        if (room != null) {
+            room.setAvailable(true);
+        }
+
+        booking.setStatus("COMPLETED");
+
+        return true;
+    }
+
 
 }
