@@ -16,4 +16,55 @@ public class PaymentService {
 
         this.bookingService = bookingService;
     }
+
+    
+    // Add a new payment
+    public boolean addPayment(Payment payment) {
+
+        // Check positive IDs
+        if (payment.getPaymentId() <= 0 ||
+            payment.getBookingId() <= 0) {
+            return false;
+        }
+
+        // Check payment amount
+        if (payment.getAmount() <= 0) {
+            return false;
+        }
+
+        // Check payment date and method
+        if (payment.getPaymentDate() == null ||
+            payment.getPaymentMethod() == null ||
+            payment.getPaymentMethod().trim().isEmpty()) {
+            return false;
+        }
+
+        // Check duplicate payment ID
+        if (searchPayment(payment.getPaymentId()) != null) {
+            return false;
+        }
+
+        // Check if booking exists
+        Booking booking = bookingService.searchBooking(
+                payment.getBookingId());
+
+        if (booking == null ||
+            booking.getStatus().equals("CANCELLED")) {
+            return false;
+        }
+
+        // Prevent multiple payments for the same booking
+        for (Payment existingPayment : payments) {
+
+            if (existingPayment.getBookingId() == payment.getBookingId()) {
+                return false;
+            }
+        }
+
+        // Save payment
+        payments.add(payment);
+
+        return true;
+    }
+
 }
