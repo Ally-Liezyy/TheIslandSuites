@@ -8,6 +8,7 @@ import  hotel.service.CustomerService;
 import hotel.presentation.LogInMenu;
 import hotel.presentation.MainMenu;
 import hotel.service.BookingService;
+import hotel.service.PaymentService;
 
 public class SystemManager {
 
@@ -25,6 +26,7 @@ public class SystemManager {
         RoomService roomService = new RoomService();
         CustomerService customerService = new CustomerService();
         BookingService bookingService = new BookingService(roomService, customerService);
+        PaymentService paymentService = new PaymentService(bookingService);
 
         LogInMenu logInMenu =
                 new LogInMenu(scanner, logInService);
@@ -32,10 +34,9 @@ public class SystemManager {
         if (logInMenu.display()) {
             System.out.println("\nOpening Main Menu...");
 
-            MainMenu mainMenu = new MainMenu(scanner, roomService, customerService, bookingService);
-
+           MainMenu mainMenu = new MainMenu(scanner, roomService, customerService, bookingService, paymentService);
             mainMenu.display();
-
+            
         } else {
             System.out.println("\nAccess Denied!");
         }

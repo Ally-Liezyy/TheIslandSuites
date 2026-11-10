@@ -6,7 +6,6 @@ import hotel.service.RoomService;
 import hotel.service.CustomerService;
 import hotel.service.BookingService;
 import hotel.service.PaymentService;
-import hotel.presentation.PaymentMenu;
 
 public class MainMenu {
 
