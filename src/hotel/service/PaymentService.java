@@ -1,9 +1,11 @@
 
 package hotel.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import hotel.model.Payment;
 import hotel.model.Booking;
+import java.time.LocalDate;
 
 public class PaymentService {
 
@@ -85,6 +87,34 @@ public class PaymentService {
         }
 
         return null;
+    }
+
+    
+    // Update payment information
+    public boolean updatePayment(int paymentId,
+                                 double amount,
+                                 String paymentMethod,
+                                 LocalDate paymentDate) {
+
+        Payment payment = searchPayment(paymentId);
+
+        if (payment == null) {
+            return false;
+        }
+
+        if (amount <= 0 ||
+            paymentMethod == null ||
+            paymentMethod.trim().isEmpty() ||
+            paymentDate == null) {
+            return false;
+        }
+
+        // Update payment details
+        payment.setAmount(amount);
+        payment.setPaymentMethod(paymentMethod);
+        payment.setPaymentDate(paymentDate);
+
+        return true;
     }
 
 
