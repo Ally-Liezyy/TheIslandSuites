@@ -12,33 +12,32 @@ public class BookingService {
 
     private ArrayList<Booking> bookings = new ArrayList<>();
 
+    private int nextBookingId = 1;
+
     private RoomService roomService;
     private CustomerService customerService;
 
     // Constructor
-    public BookingService(RoomService roomService,  CustomerService customerService) {
+    public BookingService(RoomService roomService,
+                          CustomerService customerService) {
 
         this.roomService = roomService;
         this.customerService = customerService;
     }
 
-    
     // Add a new booking
     public boolean addBooking(Booking booking) {
 
-        // Check positive IDs
-        if (booking.getBookingId() <= 0 ||
+        if (booking.getBookingId() != nextBookingId ||
             booking.getCustomerId() <= 0 ||
             booking.getRoomNumber() <= 0) {
             return false;
         }
 
-        // Check duplicate booking ID
         if (searchBooking(booking.getBookingId()) != null) {
             return false;
         }
 
-        // Check if customer exists
         Customer customer = customerService.findCustomerById(
                 booking.getCustomerId());
 
@@ -46,31 +45,30 @@ public class BookingService {
             return false;
         }
 
-        // Check if room exists
         Room room = roomService.searchRoom(booking.getRoomNumber());
 
         if (room == null || !room.isAvailable()) {
             return false;
         }
 
-        // Check booking dates
         if (booking.getCheckInDate() == null ||
             booking.getCheckOutDate() == null ||
+            booking.getCheckInDate().isBefore(LocalDate.now()) ||
             !booking.getCheckOutDate().isAfter(
                     booking.getCheckInDate())) {
             return false;
         }
 
-        // Save booking
         bookings.add(booking);
 
-        // Mark room as unavailable
         room.setAvailable(false);
+
+        // Increase ID only after successful saving
+        nextBookingId++;
 
         return true;
     }
 
-    
     // View all bookings
     public ArrayList<Booking> getAllBookings() {
         return new ArrayList<>(bookings);
@@ -89,8 +87,7 @@ public class BookingService {
         return null;
     }
 
-    
-    // Update booking information
+    // Update booking
     public boolean updateBooking(int bookingId,
                                  int customerId,
                                  int roomNumber,
@@ -99,7 +96,8 @@ public class BookingService {
 
         Booking booking = searchBooking(bookingId);
 
-        if (booking == null || !booking.getStatus().equals("ACTIVE")) {
+        if (booking == null ||
+            !booking.getStatus().equals("ACTIVE")) {
             return false;
         }
 
@@ -107,33 +105,32 @@ public class BookingService {
             return false;
         }
 
-        // Check customer
         Customer customer = customerService.findCustomerById(customerId);
 
         if (customer == null) {
             return false;
         }
 
-        // Check dates
-        if (checkInDate == null || checkOutDate == null ||
+        if (checkInDate == null ||
+            checkOutDate == null ||
+            checkInDate.isBefore(LocalDate.now()) ||
             !checkOutDate.isAfter(checkInDate)) {
             return false;
         }
 
-        // Check room
         Room newRoom = roomService.searchRoom(roomNumber);
 
         if (newRoom == null) {
             return false;
         }
 
-        // Check if selected room is available
+        // Allow the booking to keep its current room
         if (booking.getRoomNumber() != roomNumber &&
             !newRoom.isAvailable()) {
             return false;
         }
 
-        // Release previous room if changed
+        // Release previous room if room was changed
         if (booking.getRoomNumber() != roomNumber) {
 
             Room oldRoom = roomService.searchRoom(
@@ -146,7 +143,6 @@ public class BookingService {
             newRoom.setAvailable(false);
         }
 
-        // Update booking details
         booking.setCustomerId(customerId);
         booking.setRoomNumber(roomNumber);
         booking.setCheckInDate(checkInDate);
@@ -155,13 +151,13 @@ public class BookingService {
         return true;
     }
 
-    
     // Cancel booking
     public boolean cancelBooking(int bookingId) {
 
         Booking booking = searchBooking(bookingId);
 
-        if (booking == null || !booking.getStatus().equals("ACTIVE")) {
+        if (booking == null ||
+            !booking.getStatus().equals("ACTIVE")) {
             return false;
         }
 
@@ -181,7 +177,8 @@ public class BookingService {
 
         Booking booking = searchBooking(bookingId);
 
-        if (booking == null || !booking.getStatus().equals("ACTIVE")) {
+        if (booking == null ||
+            !booking.getStatus().equals("ACTIVE")) {
             return false;
         }
 
@@ -196,5 +193,8 @@ public class BookingService {
         return true;
     }
 
-
+    // Get next Booking ID
+    public int getNextBookingId() {
+        return nextBookingId;
+    }
 }

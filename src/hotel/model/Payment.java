@@ -11,10 +11,17 @@ public class Payment {
     private String paymentMethod;
     private LocalDate paymentDate;
     private String status;
+    private double cashReceived;
+    private double change;
 
-    // Constructor
-    public Payment(int paymentId, int bookingId, double amount,
-                   String paymentMethod, LocalDate paymentDate) {
+    // Original constructor - kept for compatibility
+    public Payment(int paymentId, int bookingId, double amount, String paymentMethod, LocalDate paymentDate) {
+
+        this(paymentId, bookingId, amount, paymentMethod, paymentDate, amount, 0);
+    }
+
+    // Constructor with cash received and change
+    public Payment(int paymentId, int bookingId, double amount, String paymentMethod, LocalDate paymentDate, double cashReceived, double change) {
 
         this.paymentId = paymentId;
         this.bookingId = bookingId;
@@ -22,9 +29,10 @@ public class Payment {
         this.paymentMethod = paymentMethod;
         this.paymentDate = paymentDate;
         this.status = "PAID";
+        this.cashReceived = cashReceived;
+        this.change = change;
     }
 
-    
     // Getters
     public int getPaymentId() {
         return paymentId;
@@ -50,6 +58,14 @@ public class Payment {
         return status;
     }
 
+    public double getCashReceived() {
+        return cashReceived;
+    }
+
+    public double getChange() {
+        return change;
+    }
+
     // Setters
     public void setBookingId(int bookingId) {
         this.bookingId = bookingId;
@@ -71,4 +87,11 @@ public class Payment {
         this.status = status;
     }
 
+    public void setCashReceived(double cashReceived) {
+        this.cashReceived = cashReceived;
+    }
+
+    public void setChange(double change) {
+        this.change = change;
+    }
 }

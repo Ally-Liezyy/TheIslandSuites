@@ -15,28 +15,65 @@ public class LogInMenu {
 
     public boolean display() {
 
-        System.out.println("==============================");
-        System.out.println("    HOTEL MANAGEMENT SYSTEM");
-        System.out.println("==============================");
+        clearScreen();
 
-        System.out.print("Enter Username: ");
+        System.out.println();
+        System.out.println("╔══════════════════════════════════════════════════╗");
+        System.out.println("║                                                  ║");
+        System.out.println("║                 THE ISLAND SUITES                ║");
+        System.out.println("║              LUXURY HOTEL MANAGEMENT             ║");
+        System.out.println("║                                                  ║");
+        System.out.println("╠══════════════════════════════════════════════════╣");
+        System.out.println("║                                                  ║");
+        System.out.println("║                    ADMIN LOGIN                   ║");
+        System.out.println("║                                                  ║");
+        System.out.println("║                                                  ║");
+        System.out.print("║  Username: ");
         String username = scanner.nextLine();
 
-        System.out.print("Enter Password: ");
+        System.out.print("║  Password: ");
         String password = scanner.nextLine();
+
+        System.out.println("║                                                  ║");
+        System.out.println("╚══════════════════════════════════════════════════╝");
 
         if (logInService.login(username, password)) {
 
-            System.out.println("\nLogin Successful!");
-            System.out.println("Welcome, Administrator!");
+            clearScreen();
+
+            System.out.println();
+            System.out.println("╔══════════════════════════════════════════════════╗");
+            System.out.println("║                                                  ║");
+            System.out.println("║                 LOGIN SUCCESSFUL!                ║");
+            System.out.println("║                                                  ║");
+            System.out.println("║             Welcome, Administrator!              ║");
+            System.out.println("║                                                  ║");
+            System.out.println("║              THE ISLAND SUITES                   ║");
+            System.out.println("║                                                  ║");
+            System.out.println("╚══════════════════════════════════════════════════╝");
+
+            System.out.println("\nPress Enter to continue...");
+            scanner.nextLine();
 
             return true;
 
         } else {
 
             System.out.println("\nInvalid Username or Password!");
+            System.out.println("Please check your login credentials.");
+
+            System.out.println("\nPress Enter to continue...");
+            scanner.nextLine();
+
 
             return false;
+        }
+      
+    }
+     private void clearScreen() {
+
+        for (int i = 0; i < 40; i++) {
+            System.out.println();
         }
     }
 }

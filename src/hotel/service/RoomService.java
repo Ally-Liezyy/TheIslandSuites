@@ -10,14 +10,14 @@ public class RoomService {
    // Constructor - Add initial hotel rooms
    public RoomService() {
 
-    rooms.add(new Room(1, "Single Room", 999, true));
-    rooms.add(new Room(2, "Single Room", 999, true));
+    rooms.add(new Room(101, "Single Room", 999, true));
+    rooms.add(new Room(102, "Single Room", 999, true));
 
-    rooms.add(new Room(3, "Deluxe Room", 1299, true));
-    rooms.add(new Room(4, "Deluxe Room", 1299, true));
+    rooms.add(new Room(103, "Deluxe Room", 1299, true));
+    rooms.add(new Room(104, "Deluxe Room", 1299, true));
 
-    rooms.add(new Room(5, "Deluxe Premium", 1499, true));
-    rooms.add(new Room(6, "Deluxe Premium", 1499, true));
+    rooms.add(new Room(105, "Deluxe Premium", 1499, true));
+    rooms.add(new Room(106, "Deluxe Premium", 1499, true));
 
 }
 

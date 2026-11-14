@@ -24,14 +24,25 @@ public class CustomerMenu {
         int choice;
 
         do {
-            System.out.println("\n===== CUSTOMER MANAGEMENT =====");
-            System.out.println("1. Add New Customer");
-            System.out.println("2. View All Customers");
-            System.out.println("3. Search Customer");
-            System.out.println("4. Update Customer Information");
-            System.out.println("5. Delete Customer");
-            System.out.println("6. Back to Main Menu");
+            clearScreen();
 
+            System.out.println("╔══════════════════════════════════════════════════╗");
+            System.out.println("║                                                  ║");
+            System.out.println("║                 THE ISLAND SUITES                ║");
+            System.out.println("║              LUXURY HOTEL MANAGEMENT             ║");
+            System.out.println("║                                                  ║");
+            System.out.println("╠══════════════════════════════════════════════════╣");
+            System.out.println("║                                                  ║");
+            System.out.println("║                 CUSTOMER MANAGEMENT              ║");
+            System.out.println("║                                                  ║");
+            System.out.println("║          [1]  Add New Customer                   ║");
+            System.out.println("║          [2]  View All Customers                 ║");
+            System.out.println("║          [3]  Search Customer                    ║");
+            System.out.println("║          [4]  Update Customer Information        ║");
+            System.out.println("║          [5]  Delete Customer                    ║");
+            System.out.println("║          [6]  Back to Main Menu                  ║");
+            System.out.println("║                                                  ║");
+            System.out.println("╚══════════════════════════════════════════════════╝");
             System.out.print("Enter your choice: ");
 
             choice = scanner.nextInt();
@@ -73,30 +84,53 @@ public class CustomerMenu {
      // Add customer
     private void addCustomer() 
     {
-        System.out.println("Add Customer selected.");
+        clearScreen();
 
-        System.out.println("\n--- ADD NEW CUSTOMER ---");
+        int id = 1;
 
-        System.out.print("Customer ID: ");
-        int id = scanner.nextInt();
-        scanner.nextLine();
+        ArrayList<Customer> customers = customerService.getAllCustomers();
 
-        System.out.print("Full Name: ");
-        String name = scanner.nextLine();
+        // Auto-generate Customer ID
+        for (Customer cust : customers) {
+            if (cust.getCustomerId() >= id) {
+                id = cust.getCustomerId() + 1;
+            }
+        }
 
-        System.out.print("Contact Number: ");
+        System.out.println("\n╔════════════════════════════════════════════════════╗");
+        System.out.println("║                  ADD NEW CUSTOMER                  ║");
+        System.out.println("╠════════════════════════════════════════════════════╣");
+
+        System.out.println("║ Customer ID      : " + id);
+
+        System.out.print("║ Last Name         : ");
+        String lastName = scanner.nextLine();
+
+        System.out.print("║ First Name        : ");
+        String firstName = scanner.nextLine();
+
+        System.out.print("║ Middle Name       : ");
+        String middleName = scanner.nextLine();
+
+        System.out.print("║ Contact Number    : ");
         String contact = scanner.nextLine();
 
-        System.out.print("Email: ");
+        System.out.print("║ Email Address     : ");
         String email = scanner.nextLine();
 
-        Customer customer = new Customer(id, name, contact, email);
+        Customer customer = new Customer(id, lastName, firstName, middleName, contact, email);
+
+        System.out.println("╠════════════════════════════════════════════════════╣");
 
         if (customerService.addCustomer(customer)) {
-            System.out.println("Customer added successfully!");
+            System.out.println("║            CUSTOMER ADDED SUCCESSFULLY!            ║");
         } else {
-            System.out.println("Customer ID already exists!");
+            System.out.println("║             FAILED TO ADD CUSTOMER!                ║");
         }
+
+        System.out.println("╚════════════════════════════════════════════════════╝");
+
+        pause();
     }
 
      // View all customers
@@ -106,109 +140,200 @@ public class CustomerMenu {
 
         System.out.println("\n--- CUSTOMER LIST ---");
 
-        ArrayList<Customer> customers =
-                customerService.getAllCustomers();
+        ArrayList<Customer> customers = customerService.getAllCustomers();
 
-        if (customers.isEmpty()) {
+        if (customers.isEmpty()) 
+        {
             System.out.println("No customers found.");
             return;
         }
 
-        for (Customer customer : customers) {
+       
+        System.out.println("╔═════════════════════════════════════════════════════════════════════════════════════════════════════════════╗");
+        System.out.println("║                                      CUSTOMER RECORDS                                                       ║");
+        System.out.println("╠════════╬══════════════════╬══════════════════╬══════════════════╬══════════════════╬════════════════════════╣");
+        System.out.println("║ ID     ║ LAST NAME        ║ FIRST NAME       ║ MIDDLE NAME      ║ CONTACT NUMBER   ║ EMAIL                  ║");
+        System.out.println("╠════════╬══════════════════╬══════════════════╬══════════════════╬══════════════════╬════════════════════════╣");
 
-            System.out.println("-------------------------");
-            System.out.println("Customer ID: " + customer.getCustomerId());
-            System.out.println("Name: " + customer.getName());
-            System.out.println("Contact: " + customer.getContactNumber());
-            System.out.println("Email: " + customer.getEmail());
+        for (Customer cust : customers) {
+        
+
+            System.out.printf(
+                "║ %-6d ║ %-16s ║ %-16s ║ %-16s ║ %-16s ║ %-22s ║%n",
+                cust.getCustomerId(),
+                cust.getLastName(),
+                cust.getFirstName(),
+                cust.getMiddleName(),
+                cust.getContactNumber(),
+                cust.getEmail()
+            );
         }
+
+        System.out.println("╚════════╩══════════════════╩══════════════════╩══════════════════╩══════════════════╩════════════════════════╝");
+
+        pause();
     }
 
       // Search customer
     private void searchCustomer() {
-        System.out.println("Search Customer selected.");
+        
+    clearScreen();
 
-        System.out.print("\nEnter Customer ID: ");
+        System.out.println("\n╔════════════════════════════════════════════════════╗");
+        System.out.println("║                   SEARCH CUSTOMER                  ║");
+        System.out.println("╠════════════════════════════════════════════════════╣");
+
+        System.out.print("║ Enter Customer ID : ");
         int id = scanner.nextInt();
         scanner.nextLine();
 
         Customer customer = customerService.findCustomerById(id);
 
+        System.out.println("╠════════════════════════════════════════════════════╣");
+
         if (customer != null) {
 
-            System.out.println("\nCustomer Found!");
-            System.out.println("Customer ID: " + customer.getCustomerId());
-            System.out.println("Name: " + customer.getName());
-            System.out.println("Contact: " + customer.getContactNumber());
-            System.out.println("Email: " + customer.getEmail());
+            System.out.println("║                  CUSTOMER FOUND                    ║");
+            System.out.println("║ Customer ID      : " + customer.getCustomerId());
+            System.out.println("║ Last Name        : " + customer.getLastName());
+            System.out.println("║ First Name       : " + customer.getFirstName());
+            System.out.println("║ Middle Name      : " + customer.getMiddleName());
+            System.out.println("║ Contact Number   : " + customer.getContactNumber());
+            System.out.println("║ Email Address    : " + customer.getEmail());
 
         } else {
-            System.out.println("Customer not found!");
+            System.out.println("║                CUSTOMER NOT FOUND!                 ║");
         }
 
+        System.out.println("╚════════════════════════════════════════════════════╝");
+
+        pause();
     }
 
    
     // Update customer
     private void updateCustomer() {
 
-        System.out.println("\n--- UPDATE CUSTOMER ---");
+        clearScreen();
 
-        System.out.print("Enter Customer ID: ");
+        System.out.println("\n╔════════════════════════════════════════════════════╗");
+        System.out.println("║                   UPDATE CUSTOMER                  ║");
+        System.out.println("╠════════════════════════════════════════════════════╣");
+
+        System.out.print("║ Enter Customer ID : ");
         int id = scanner.nextInt();
         scanner.nextLine();
 
-        // Find the customer using the entered ID
         Customer customer = customerService.findCustomerById(id);
 
-        // Check if customer exists
         if (customer == null) {
-        System.out.println("Customer not found!");
-        return;
-    }
 
-        // Display existing information
-        System.out.println("\n--- CURRENT CUSTOMER INFORMATION ---");
-        System.out.println("Customer ID: " + customer.getCustomerId());
-        System.out.println("Full Name: " + customer.getName());
-        System.out.println("Contact Number: " + customer.getContactNumber());
-        System.out.println("Email: " + customer.getEmail());
+            System.out.println("╠════════════════════════════════════════════════════╣");
+            System.out.println("║                CUSTOMER NOT FOUND!                 ║");
+            System.out.println("╚════════════════════════════════════════════════════╝");
 
-        // Ask for new information
-        System.out.println("\n--- ENTER NEW INFORMATION ---");
+            pause();
+            return;
+        }
 
-        System.out.print("New Full Name: ");
-        String name = scanner.nextLine();
+        System.out.println("╠════════════════════════════════════════════════════╣");
+        System.out.println("║             CURRENT CUSTOMER INFORMATION           ║");
+        System.out.println("╠════════════════════════════════════════════════════╣");
 
-        System.out.print("New Contact Number: ");
+        System.out.println("║ Customer ID      : " + customer.getCustomerId());
+        System.out.println("║ Last Name        : " + customer.getLastName());
+        System.out.println("║ First Name       : " + customer.getFirstName());
+        System.out.println("║ Middle Name      : " + customer.getMiddleName());
+        System.out.println("║ Contact Number   : " + customer.getContactNumber());
+        System.out.println("║ Email Address    : " + customer.getEmail());
+
+        System.out.println("╠════════════════════════════════════════════════════╣");
+        System.out.println("║                  NEW INFORMATION                   ║");
+        System.out.println("╠════════════════════════════════════════════════════╣");
+
+        System.out.print("║ New Last Name     : ");
+        String lastName = scanner.nextLine();
+
+        System.out.print("║ New First Name    : ");
+        String firstName = scanner.nextLine();
+
+        System.out.print("║ New Middle Name   : ");
+        String middleName = scanner.nextLine();
+
+        System.out.print("║ New Contact Number: ");
         String contact = scanner.nextLine();
 
-        System.out.print("New Email: ");
+        System.out.print("║ New Email Address : ");
         String email = scanner.nextLine();
 
-        // Save updated information
-        if (customerService.updateCustomer(id, name, contact, email)) 
-        {
-        System.out.println("\nCustomer updated successfully!");
-        } else {
-        System.out.println("\nFailed to update customer!");
-        }
-}
+        System.out.println("╠════════════════════════════════════════════════════╣");
 
-     // Delete customer
+        if (customerService.updateCustomer(id, lastName, firstName, middleName, contact, email)) {
+            System.out.println("║           CUSTOMER UPDATED SUCCESSFULLY!           ║");
+        } else {
+            System.out.println("║             FAILED TO UPDATE CUSTOMER!             ║");
+        }
+
+        System.out.println("╚════════════════════════════════════════════════════╝");
+
+        pause();
+        }
+
+    // Delete customer
     private void deleteCustomer() {
 
-        System.out.println("Delete Customer selected.");
+        clearScreen();
 
+        viewCustomers();
 
-        System.out.print("\nEnter Customer ID: ");
+        System.out.println("\n╔════════════════════════════════════════════════════╗");
+        System.out.println("║                   DELETE CUSTOMER                  ║");
+        System.out.println("╠════════════════════════════════════════════════════╣");
+
+        System.out.print("║ Enter Customer ID : ");
         int id = scanner.nextInt();
         scanner.nextLine();
 
-        if (customerService.deleteCustomer(id)) {
-            System.out.println("Customer deleted successfully!");
-        } else {
-            System.out.println("Customer not found!");
+        Customer customer = customerService.findCustomerById(id);
+
+        if (customer == null) {
+
+            System.out.println("╠════════════════════════════════════════════════════╣");
+            System.out.println("║                CUSTOMER NOT FOUND!                 ║");
+            System.out.println("╚════════════════════════════════════════════════════╝");
+
+            pause();
+            return;
         }
+
+        System.out.println("║ Customer ID      : " + customer.getCustomerId());
+        System.out.println("║ Last Name        : " + customer.getLastName());
+        System.out.println("║ First Name       : " + customer.getFirstName());
+        System.out.println("║ Middle Name      : " + customer.getMiddleName());
+
+        System.out.println("╠════════════════════════════════════════════════════╣");
+
+        if (customerService.deleteCustomer(id)) {
+            System.out.println("║           CUSTOMER DELETED SUCCESSFULLY!           ║");
+        } else {
+            System.out.println("║             FAILED TO DELETE CUSTOMER!             ║");
+        }
+
+        System.out.println("╚════════════════════════════════════════════════════╝");
+
+        pause();
+    }
+
+    // Clear Screen
+     private void clearScreen() {
+         for (int i = 0; i < 40; i++) {
+            System.out.println();
+        }
+    }
+
+    // Pause
+    private void pause() {
+        System.out.println("\nPress Enter to continue...");
+        scanner.nextLine();
     }
 }

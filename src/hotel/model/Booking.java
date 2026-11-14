@@ -13,8 +13,7 @@ public class Booking {
     private String status;
 
     // Constructor
-    public Booking(int bookingId, int customerId, int roomNumber,
-                   LocalDate checkInDate, LocalDate checkOutDate) {
+    public Booking(int bookingId, int customerId, int roomNumber,   LocalDate checkInDate, LocalDate checkOutDate) {
 
         this.bookingId = bookingId;
         this.customerId = customerId;

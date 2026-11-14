@@ -43,17 +43,18 @@ public class CustomerService {
         return null;
     }
 
-     // Update customer information
-    public boolean updateCustomer(int customerId,  String name,  String contactNumber,  String email) 
-    {
+   // Update customer information
+    public boolean updateCustomer(int customerId, String lastName, String firstName, String middleName, String contactNumber, String email) {
+
         Customer customer = findCustomerById(customerId);
 
-        if (customer == null) 
-        {
+        if (customer == null) {
             return false;
         }
 
-        customer.setName(name);
+        customer.setLastName(lastName);
+        customer.setFirstName(firstName);
+        customer.setMiddleName(middleName);
         customer.setContactNumber(contactNumber);
         customer.setEmail(email);
 

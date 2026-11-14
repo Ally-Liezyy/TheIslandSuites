@@ -11,6 +11,12 @@ public class PaymentService {
 
     private ArrayList<Payment> payments = new ArrayList<>();
 
+    private int nextPaymentId = 1;
+
+    public int getNextPaymentId() {
+    return nextPaymentId;
+    }
+
     private BookingService bookingService;
 
     // Constructor
@@ -64,9 +70,9 @@ public class PaymentService {
         }
 
         // Save payment
-        payments.add(payment);
-
-        return true;
+       payments.add(payment);
+       nextPaymentId++;
+       return true;
     }
 
     

@@ -32,18 +32,32 @@ public class MainMenu {
         int choice;
 
         do {
-            System.out.println("\n===== THE ISLAND SUITES =====");
-            System.out.println("1. Room Management");
-            System.out.println("2. Customer Management");
-            System.out.println("3. Booking Management");
-            System.out.println("4. Payment Management");
-            System.out.println("5. Logout");
+           clearScreen();
 
-            System.out.print("Enter your choice: ");
+            System.out.println();
+            System.out.println("╔══════════════════════════════════════════════════╗");
+            System.out.println("║                                                  ║");
+            System.out.println("║                 THE ISLAND SUITES                ║");
+            System.out.println("║              LUXURY HOTEL MANAGEMENT             ║");
+            System.out.println("║                                                  ║");
+            System.out.println("╠══════════════════════════════════════════════════╣");
+            System.out.println("║                                                  ║");
+            System.out.println("║                    MAIN MENU                     ║");
+            System.out.println("║                                                  ║");
+            System.out.println("║          [1]  Room Management                    ║");
+            System.out.println("║          [2]  Customer Management                ║");
+            System.out.println("║          [3]  Booking Management                 ║");
+            System.out.println("║          [4]  Payment Management                 ║");
+            System.out.println("║          [5]  Logout                             ║");
+            System.out.println("║                                                  ║");
+            System.out.println("╠══════════════════════════════════════════════════╣");
+            System.out.println("║                                                  ║");
+            System.out.print("║  Enter your choice: ");
             choice = scanner.nextInt();
 
             switch (choice) {
                 case 1:
+                   clearScreen();
                     System.out.println("Room Management selected.");
 
                     RoomMenu roomMenu = new RoomMenu(scanner, roomService);
@@ -52,21 +66,31 @@ public class MainMenu {
                     break;
 
                 case 2:
+                    clearScreen();
                     System.out.println("Customer Management selected.");
                     CustomerMenu customerMenu = new CustomerMenu(scanner, customerService);
                     customerMenu.display();
                     break;
 
                case 3:
-                    BookingMenu bookingMenu = new BookingMenu(scanner, bookingService);
+                    clearScreen();
+                    BookingMenu bookingMenu = new BookingMenu(scanner, bookingService, paymentService, customerService, roomService);
                     bookingMenu.display();
                     break;
                 case 4:
-                    PaymentMenu paymentMenu = new PaymentMenu(scanner, paymentService);
+                    clearScreen();
+                    PaymentMenu paymentMenu = new PaymentMenu( scanner, paymentService, bookingService, customerService, roomService);
                     paymentMenu.display();
                     break;
                 case 5:
-                    System.out.println("Logging out...");
+                   clearScreen();
+                    System.out.println();
+                    System.out.println("╔══════════════════════════════════════════════════╗");
+                    System.out.println("║                                                  ║");
+                    System.out.println("║             THANK YOU FOR VISITING!              ║");
+                    System.out.println("║                  THE ISLAND SUITES               ║");
+                    System.out.println("║                                                  ║");
+                    System.out.println("╚══════════════════════════════════════════════════╝");
                     break;
 
                 default:
@@ -75,4 +99,12 @@ public class MainMenu {
 
         } while (choice != 5);
     }
+
+    //CLEAR SCREEN
+    private void clearScreen() {
+
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+    }
+
 }
