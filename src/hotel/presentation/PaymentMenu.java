@@ -89,8 +89,12 @@ public class PaymentMenu {
             System.out.print(message);
             try {
                 return Integer.parseInt(scanner.nextLine());
+
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input! Enter a whole number.");
+
+            } catch (Exception e) {
+                System.out.println("Unexpected error: " + e.getMessage());
             }
         }
     }
@@ -104,6 +108,19 @@ public class PaymentMenu {
                 System.out.println("Amount must be greater than zero.");
             } catch (NumberFormatException e) {
                 System.out.println("Invalid amount!");
+            } try {
+                double amount = Double.parseDouble(scanner.nextLine());
+
+                if (amount > 0)
+                    return amount;
+
+                System.out.println("Amount must be greater than zero.");
+
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid amount!");
+
+            } catch (Exception e) {
+                System.out.println("Unexpected error: " + e.getMessage());
             }
         }
     }
@@ -290,34 +307,106 @@ public class PaymentMenu {
         clearScreen();
         header("ALL PAYMENTS");
 
-        ArrayList<Payment> payments = paymentService.getAllPayments();
+        ArrayList<Booking> bookings = bookingService.getAllBookings();
 
-        if (payments.isEmpty()) {
-            System.out.println("\nNo payment records found.");
+        if (bookings.isEmpty()) {
+            System.out.println("\nNo bookings found.");
             pauseScreen();
             return;
         }
 
-        System.out.println("\n╔════════════════════════════════════════════════════════════════════════════════════════════╗");
-        System.out.println("║                                    PAYMENT RECORDS                                         ║");
-        System.out.println("╠══════════╦══════════╦══════════════════════╦════════════════╦══════════════╦═══════════════╣");
-        System.out.println("║ PAY ID   ║ BOOKING  ║ CUSTOMER NAME        ║ AMOUNT         ║ METHOD       ║ STATUS        ║");
-        System.out.println("╠══════════╬══════════╬══════════════════════╬════════════════╬══════════════╬═══════════════╣");
+        System.out.println("\n╔═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗");
+        System.out.println("║                                                           PAYMENT RECORDS                                                 ║");
+        System.out.println("╠══════════╦══════════╦══════════════════════╦════════════════╦════════════════╦════════════════╦═══════════════╣");
+        System.out.println("║ PAY ID   ║ BOOKING  ║ CUSTOMER NAME        ║ TOTAL AMOUNT   ║ PAID AMOUNT    ║ BALANCE        ║ STATUS        ║");
+        System.out.println("╠══════════╬══════════╬══════════════════════╬════════════════╬════════════════╬════════════════╬═══════════════╣");
 
-        for (Payment p : payments) {
-            Booking b = bookingService.searchBooking(p.getBookingId());
-            Customer c = b == null ? null : getCustomer(b.getCustomerId());
-            String name = c == null ? "Unknown" : c.getFirstName() + " " + c.getLastName();
+        int paidCount = 0;
+        int unpaidCount = 0;
+        int cancelledCount = 0;
 
-            System.out.printf("║ %-8d ║ %-8d ║ %-20s ║ PHP %-10.2f ║ %-12s ║ %-13s ║%n",
-                    p.getPaymentId(), p.getBookingId(), name,
-                    p.getAmount(), p.getPaymentMethod(), p.getStatus());
+        double totalAmount = 0;
+        double totalPaid = 0;
+        double totalBalance = 0;
+
+        for (Booking b : bookings) {
+
+            Customer c = getCustomer(b.getCustomerId());
+            Room r = getRoom(b.getRoomNumber());
+
+            String name = c == null
+                    ? "Unknown"
+                    : c.getFirstName() + " " + c.getLastName();
+
+            double bookingAmount = 0;
+
+            if (r != null) {
+                long nights = ChronoUnit.DAYS.between(
+                        b.getCheckInDate(), b.getCheckOutDate());
+
+                bookingAmount = r.getPrice() * nights;
+            }
+
+            Payment p = getPaymentByBookingId(b.getBookingId());
+
+            double paidAmount = p == null ? 0 : p.getAmount();
+            double balance = bookingAmount - paidAmount;
+
+            String status;
+
+            if (b.getStatus().equals("CANCELLED")) {
+                status = "CANCELLED";
+                cancelledCount++;
+            }
+            else if (p == null) {
+                status = "UNPAID";
+                unpaidCount++;
+            }
+            else if (paidAmount >= bookingAmount) {
+                status = "PAID";
+                paidCount++;
+                balance = 0;
+            }
+            else {
+                status = "UNDERPAID";
+                unpaidCount++;
+            }
+
+            if (balance < 0) {
+                balance = 0;
+            }
+
+            totalAmount += bookingAmount;
+            totalPaid += paidAmount;
+            totalBalance += balance;
+
+            String payId = p == null ? "-" : String.valueOf(p.getPaymentId());
+
+            System.out.printf(
+                "║ %-8s ║ %-8d ║ %-20s ║ PHP %-10.2f ║ PHP %-10.2f ║ PHP %-10.2f ║ %-13s ║%n",
+                payId,
+                b.getBookingId(),
+                name,
+                bookingAmount,
+                paidAmount,
+                balance,
+                status
+            );
         }
 
-        System.out.println("╚══════════╩══════════╩══════════════════════╩════════════════╩══════════════╩═══════════════╝");
-        System.out.println("\nTotal Payments: " + payments.size());
+        System.out.println("╚══════════╩══════════╩══════════════════════╩════════════════╩════════════════╩════════════════╩═══════════════╝");
+
+        System.out.println("\nPAYMENT SUMMARY");
+        System.out.println("Total Bookings     : " + bookings.size());
+        System.out.println("Paid Bookings     : " + paidCount);
+        System.out.println("Unpaid Bookings   : " + unpaidCount);
+        System.out.println("Cancelled Bookings : " + cancelledCount);
+        System.out.printf("Total Amount      : PHP %.2f%n", totalAmount);
+        System.out.printf("Total Paid        : PHP %.2f%n", totalPaid);
+        System.out.printf("Total Balance     : PHP %.2f%n", totalBalance);
 
         pauseScreen();
+    
     }
 
     // SEARCH PAYMENT

@@ -102,11 +102,15 @@ public class BookingMenu {
         while (true) {
             System.out.print(message);
 
-            try {
-                return Integer.parseInt(scanner.nextLine());
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input! Enter a whole number.");
-            }
+        try {
+            return Integer.parseInt(scanner.nextLine());
+
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid input! Enter a whole number.");
+
+        } catch (Exception e) {
+            System.out.println("Unexpected error: " + e.getMessage());
+        }
         }
     }
 
@@ -115,15 +119,20 @@ public class BookingMenu {
         while (true) {
             System.out.print(message);
 
-            try {
-                double amount = Double.parseDouble(scanner.nextLine());
+           try {
+            double amount = Double.parseDouble(scanner.nextLine());
 
-                if (amount > 0) return amount;
+            if (amount > 0) {
+                return amount;
+            }
 
                 System.out.println("Amount must be greater than zero.");
 
             } catch (NumberFormatException e) {
                 System.out.println("Invalid amount!");
+
+            } catch (Exception e) {
+                System.out.println("Unexpected error: " + e.getMessage());
             }
         }
     }
@@ -385,8 +394,7 @@ public class BookingMenu {
         section("BOOKING SUMMARY");
 
         System.out.println("Booking ID      : " + bookingId);
-        System.out.println("Customer        : " + customer.getFirstName()
-                + " " + customer.getLastName());
+        System.out.println("Customer        : " + customer.getFirstName()+ " " + customer.getLastName());
         System.out.println("Room Number     : " + roomNumber);
         System.out.println("Room Type       : " + room.getRoomType());
         System.out.printf("Price per Night : PHP %.2f%n", room.getPrice());
@@ -447,8 +455,8 @@ public class BookingMenu {
 
         ArrayList<Booking> bookings = bookingService.getAllBookings();
 
-        System.out.println("\n╔══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗");
-        System.out.println("║                                                        BOOKING RECORDS                                                                ║");
+        System.out.println("\n╔═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗");
+        System.out.println("║                                                        BOOKING RECORDS                                                        ║");
         System.out.println("╠══════════╦══════════════════════╦═══════════╦══════════════╦══════════════╦════════════════╦════════════╦════════════════╣");
         System.out.println("║ BOOKING  ║ CUSTOMER NAME        ║ ROOM NO.  ║ CHECK-IN     ║ CHECK-OUT    ║ TOTAL          ║ STATUS     ║ PAYMENT        ║");
         System.out.println("╠══════════╬══════════════════════╬═══════════╬══════════════╬══════════════╬════════════════╬════════════╬════════════════╣");

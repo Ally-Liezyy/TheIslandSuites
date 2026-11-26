@@ -21,8 +21,8 @@ public class RoomService {
 
 }
 
-     // Add a new room
-    public boolean addRoom(Room room) {
+   // Add a new room
+   public boolean addRoom(Room room) {
 
      for (Room existingRoom : rooms) 
      {
@@ -33,7 +33,7 @@ public class RoomService {
 
       rooms.add(room);
       return true;
-    }
+   }
      
     // View all rooms
     public ArrayList<Room> getAllRooms()
