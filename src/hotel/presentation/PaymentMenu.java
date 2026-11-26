@@ -1,9 +1,11 @@
+
 package hotel.presentation;
 
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.time.format.DateTimeParseException;
 
 import hotel.model.Payment;
 import hotel.model.Booking;
@@ -23,6 +25,7 @@ public class PaymentMenu {
     private CustomerService customerService;
     private RoomService roomService;
 
+    // CONSTRUCTOR
     public PaymentMenu(Scanner scanner, PaymentService paymentService,
             BookingService bookingService, CustomerService customerService,
             RoomService roomService) {
@@ -34,33 +37,54 @@ public class PaymentMenu {
         this.roomService = roomService;
     }
 
-    // PAYMENT MENU
+    // MAIN MENU
     public void display() {
+
         int choice;
 
         do {
             clearScreen();
+
             header("PAYMENT MANAGEMENT");
 
-            System.out.println("║                                                  ║");
-            System.out.println("║          [1]  Add New Payment                    ║");
-            System.out.println("║          [2]  View All Payments                  ║");
-            System.out.println("║          [3]  Search Payment                     ║");
-            System.out.println("║          [4]  Update Payment                     ║");
-            System.out.println("║          [5]  Delete Payment                     ║");
-            System.out.println("║          [6]  Back to Main Menu                  ║");
-            System.out.println("║                                                  ║");
-            System.out.println("╠══════════════════════════════════════════════════╣");
+            displayBlankLine();
+            System.out.println("║          [1] Add New Payment                     ║");
+            System.out.println("║          [2] View All Payments                   ║");
+            System.out.println("║          [3] Search Payment                      ║");
+            System.out.println("║          [4] Update Payment                      ║");
+            System.out.println("║          [5] Delete Payment                      ║");
+            System.out.println("║          [6] Back to Main Menu                   ║");
+            displayBlankLine();
+            displayBottomBorder();
 
-            choice = readInt("║  Enter your choice: ");
+            choice = readInt("║ Enter your choice: ");
 
             switch (choice) {
-                case 1: addPayment(); break;
-                case 2: viewPayments(); break;
-                case 3: searchPayment(); break;
-                case 4: updatePayment(); break;
-                case 5: deletePayment(); break;
-                case 6: System.out.println("\nReturning to Main Menu..."); break;
+
+                case 1:
+                    addPayment();
+                    break;
+
+                case 2:
+                    viewPayments();
+                    break;
+
+                case 3:
+                    searchPayment();
+                    break;
+
+                case 4:
+                    updatePayment();
+                    break;
+
+                case 5:
+                    deletePayment();
+                    break;
+
+                case 6:
+                    System.out.println("\nReturning to Main Menu...");
+                    break;
+
                 default:
                     System.out.println("\nInvalid choice!");
                     pauseScreen();
@@ -71,103 +95,153 @@ public class PaymentMenu {
 
     // HEADER
     private void header(String title) {
-        System.out.println("╔══════════════════════════════════════════════════╗");
-        System.out.println("║                                                  ║");
-        System.out.println("║                 THE ISLAND SUITES                ║");
-        System.out.println("║              LUXURY HOTEL MANAGEMENT             ║");
-        System.out.println("║                                                  ║");
-        System.out.println("╠══════════════════════════════════════════════════╣");
-        System.out.println("║                                                  ║");
-        System.out.printf("║                 %-32s ║%n", title);
-        System.out.println("║                                                  ║");
-        System.out.println("╠══════════════════════════════════════════════════╣");
+
+        displayTopBorder();
+        displayBlankLine();
+        displayCenteredText("THE ISLAND SUITES");
+        displayCenteredText("LUXURY HOTEL MANAGEMENT");
+        displayBlankLine();
+        displayMiddleBorder();
+        displayBlankLine();
+        displayCenteredText(title);
+        displayBlankLine();
+        displayMiddleBorder();
     }
 
-    // INPUT METHODS
+    // ADDITIONAL INPUT METHODS
+
+    // INTEGER INPUT
     private int readInt(String message) {
+
         while (true) {
+
             System.out.print(message);
+
             try {
+
                 return Integer.parseInt(scanner.nextLine());
 
             } catch (NumberFormatException e) {
+
                 System.out.println("Invalid input! Enter a whole number.");
 
             } catch (Exception e) {
+
                 System.out.println("Unexpected error: " + e.getMessage());
             }
         }
     }
 
+    // AMOUNT INPUT
     private double readAmount(String message) {
+
         while (true) {
+
             System.out.print(message);
+
             try {
-                double amount = Double.parseDouble(scanner.nextLine());
-                if (amount > 0) return amount;
-                System.out.println("Amount must be greater than zero.");
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid amount!");
-            } try {
+
                 double amount = Double.parseDouble(scanner.nextLine());
 
-                if (amount > 0)
+                if (Double.isFinite(amount) && amount > 0) {
                     return amount;
+                }
 
                 System.out.println("Amount must be greater than zero.");
 
             } catch (NumberFormatException e) {
-                System.out.println("Invalid amount!");
+
+                System.out.println("Invalid amount! Please enter a valid amount.");
 
             } catch (Exception e) {
+
                 System.out.println("Unexpected error: " + e.getMessage());
             }
         }
     }
 
+    // DATE INPUT
+    private LocalDate readDate(String message) {
+
+        while (true) {
+
+            System.out.print(message);
+
+            try {
+
+                return LocalDate.parse(scanner.nextLine());
+
+            } catch (DateTimeParseException e) {
+
+                System.out.println("Invalid date! Use YYYY-MM-DD format.");
+
+            } catch (Exception e) {
+
+                System.out.println("Unexpected error: " + e.getMessage());
+            }
+        }
+    }
+
+    // CONFIRMATION
     private boolean confirm(String message) {
+
         System.out.print("\n" + message + " (Y/N): ");
+
         return scanner.nextLine().equalsIgnoreCase("Y");
     }
 
+    // PAYMENT METHOD
     private String getMethod() {
+
         System.out.println("\n[1] Cash");
         System.out.println("[2] GCash");
         System.out.println("[3] Card");
 
         int option;
+
         do {
+
             option = readInt("Select Payment Method: ");
-            if (option < 1 || option > 3)
+
+            if (option < 1 || option > 3) {
                 System.out.println("Invalid payment method!");
+            }
+
         } while (option < 1 || option > 3);
 
         return option == 1 ? "Cash" : option == 2 ? "GCash" : "Card";
     }
 
+    // GET CUSTOMER
     private Customer getCustomer(int id) {
         return customerService.findCustomerById(id);
     }
 
+    // GET ROOM
     private Room getRoom(int number) {
         return roomService.searchRoom(number);
     }
 
+    // GET PAYMENT BY BOOKING ID
     private Payment getPaymentByBookingId(int id) {
-        for (Payment p : paymentService.getAllPayments())
-            if (p.getBookingId() == id) return p;
+
+        for (Payment p : paymentService.getAllPayments()) {
+
+            if (p.getBookingId() == id) {
+                return p;
+            }
+        }
 
         return null;
     }
 
     // DISPLAY BOOKING INFORMATION
     private void displayBookingInformation(Booking b) {
+
         Customer c = getCustomer(b.getCustomerId());
         Room r = getRoom(b.getRoomNumber());
 
-        System.out.println("\n╔══════════════════════════════════════════════════╗");
-        System.out.println("║                  BOOKING INFORMATION             ║");
-        System.out.println("╠══════════════════════════════════════════════════╣");
+        displayTitle("BOOKING INFORMATION");
 
         System.out.println("║ Booking ID      : " + b.getBookingId());
         System.out.println("║ Customer ID     : " + b.getCustomerId());
@@ -180,34 +254,40 @@ public class PaymentMenu {
         System.out.println("║ Room Number     : " + b.getRoomNumber());
 
         if (r != null) {
+
             System.out.println("║ Room Type       : " + r.getRoomType());
             System.out.printf("║ Price per Night : PHP %.2f%n", r.getPrice());
 
-            long nights = ChronoUnit.DAYS.between(b.getCheckInDate(), b.getCheckOutDate());
+            long nights = ChronoUnit.DAYS.between(
+                    b.getCheckInDate(), b.getCheckOutDate());
+
             System.out.printf("║ Booking Amount  : PHP %.2f%n", r.getPrice() * nights);
         }
 
         System.out.println("║ Check-in Date   : " + b.getCheckInDate());
         System.out.println("║ Check-out Date  : " + b.getCheckOutDate());
         System.out.println("║ Booking Status  : " + b.getStatus());
-        System.out.println("╚══════════════════════════════════════════════════╝");
+
+        displayBottomBorder();
     }
 
-    // DISPLAY RECEIPT
+    // DISPLAY PAYMENT RECEIPT
     private void displayReceipt(Payment p) {
+
         Booking b = bookingService.searchBooking(p.getBookingId());
 
-        System.out.println("\n╔══════════════════════════════════════════════════╗");
-        System.out.println("║                                                  ║");
-        System.out.println("║                 THE ISLAND SUITES                ║");
-        System.out.println("║                  PAYMENT RECEIPT                 ║");
-        System.out.println("║                                                  ║");
-        System.out.println("╠══════════════════════════════════════════════════╣");
+        displayTopBorder();
+        displayBlankLine();
+        displayCenteredText("THE ISLAND SUITES");
+        displayCenteredText("PAYMENT RECEIPT");
+        displayBlankLine();
+        displayMiddleBorder();
 
         System.out.println("║ Payment ID      : " + p.getPaymentId());
         System.out.println("║ Booking ID      : " + p.getBookingId());
 
         if (b != null) {
+
             Customer c = getCustomer(b.getCustomerId());
             Room r = getRoom(b.getRoomNumber());
 
@@ -220,83 +300,105 @@ public class PaymentMenu {
 
             System.out.println("║ Room Number     : " + b.getRoomNumber());
 
-            if (r != null)
+            if (r != null) {
                 System.out.println("║ Room Type       : " + r.getRoomType());
+            }
 
             System.out.println("║ Check-in Date   : " + b.getCheckInDate());
             System.out.println("║ Check-out Date  : " + b.getCheckOutDate());
         }
 
-        System.out.println("╠══════════════════════════════════════════════════╣");
+        displayMiddleBorder();
+
         System.out.printf("║ Amount          : PHP %.2f%n", p.getAmount());
         System.out.println("║ Payment Method  : " + p.getPaymentMethod());
         System.out.println("║ Payment Date    : " + p.getPaymentDate());
         System.out.println("║ Payment Status  : " + p.getStatus());
-        System.out.println("╠══════════════════════════════════════════════════╣");
-        System.out.println("║              THANK YOU FOR YOUR PAYMENT!         ║");
-        System.out.println("║                                                  ║");
-        System.out.println("╚══════════════════════════════════════════════════╝");
+
+        displayMiddleBorder();
+        displayCenteredText("THANK YOU FOR YOUR PAYMENT!");
+        displayBlankLine();
+        displayBottomBorder();
     }
 
     // ADD NEW PAYMENT
     private void addPayment() {
+
         clearScreen();
-        header("ADD NEW PAYMENT");
 
-        int bookingId = readInt("║  Enter Booking ID: ");
-        Booking booking = bookingService.searchBooking(bookingId);
+        try {
 
-        if (booking == null) {
-            System.out.println("\nBooking not found!");
-            pauseScreen();
-            return;
-        }
+            header("ADD NEW PAYMENT");
 
-        Payment existing = getPaymentByBookingId(bookingId);
+            int bookingId = readInt("║ Enter Booking ID: ");
 
-        if (existing != null) {
-            System.out.println("\nThis booking already has a payment!");
-            System.out.println("Payment Status: " + existing.getStatus());
-            pauseScreen();
-            return;
-        }
+            Booking booking = bookingService.searchBooking(bookingId);
 
-        displayBookingInformation(booking);
+            if (booking == null) {
 
-        System.out.println("\n╔══════════════════════════════════════════════════╗");
-        System.out.println("║                   PAYMENT DETAILS                ║");
-        System.out.println("╠══════════════════════════════════════════════════╣");
+                displayErrorMessage("BOOKING NOT FOUND!");
+                pauseScreen();
+                return;
+            }
 
-        double amount = readAmount("║ Enter Payment Amount: PHP ");
-        String method = getMethod();
+            Payment existing = getPaymentByBookingId(bookingId);
 
-        System.out.print("║ Payment Date (YYYY-MM-DD): ");
-        LocalDate date = LocalDate.parse(scanner.nextLine());
+            if (existing != null) {
 
-        System.out.println("╚══════════════════════════════════════════════════╝");
+                displayErrorMessage("THIS BOOKING ALREADY HAS A PAYMENT!");
 
-        System.out.println("\nPayment Summary");
-        System.out.println("Booking ID     : " + bookingId);
-        System.out.println("Payment Amount : PHP " + amount);
-        System.out.println("Payment Method : " + method);
-        System.out.println("Payment Date   : " + date);
+                System.out.println("║ Payment Status: " + existing.getStatus());
 
-        if (!confirm("Confirm this payment?")) {
-            System.out.println("Payment was not saved.");
-            pauseScreen();
-            return;
-        }
+                pauseScreen();
+                return;
+            }
 
-        Payment payment = new Payment(
-                paymentService.getNextPaymentId(), bookingId,
-                amount, method, date
-        );
+            displayBookingInformation(booking);
 
-        if (paymentService.addPayment(payment)) {
-            System.out.println("\n[SUCCESS] Payment successfully added!");
-            displayReceipt(payment);
-        } else {
-            System.out.println("\n[ERROR] Unable to add payment!");
+            displayTitle("PAYMENT DETAILS");
+
+            double amount = readAmount("║ Enter Payment Amount: PHP ");
+
+            String method = getMethod();
+
+            LocalDate date = readDate("║ Payment Date (YYYY-MM-DD): ");
+
+            displayBottomBorder();
+
+            System.out.println("\nPAYMENT SUMMARY");
+            System.out.println("Booking ID     : " + bookingId);
+            System.out.printf("Payment Amount : PHP %.2f%n", amount);
+            System.out.println("Payment Method : " + method);
+            System.out.println("Payment Date   : " + date);
+
+            if (!confirm("Confirm this payment?")) {
+
+                System.out.println("Payment was not saved.");
+                pauseScreen();
+                return;
+            }
+
+            Payment payment = new Payment(
+                    paymentService.getNextPaymentId(),
+                    bookingId,
+                    amount,
+                    method,
+                    date
+            );
+
+            if (paymentService.addPayment(payment)) {
+
+                System.out.println("\n[SUCCESS] Payment successfully added!");
+                displayReceipt(payment);
+
+            } else {
+
+                System.out.println("\n[ERROR] Unable to add payment!");
+            }
+
+        } catch (Exception e) {
+
+            displayError("adding payment", e);
         }
 
         pauseScreen();
@@ -304,165 +406,220 @@ public class PaymentMenu {
 
     // VIEW ALL PAYMENTS
     private void viewPayments() {
+
         clearScreen();
-        header("ALL PAYMENTS");
 
-        ArrayList<Booking> bookings = bookingService.getAllBookings();
+        try {
 
-        if (bookings.isEmpty()) {
-            System.out.println("\nNo bookings found.");
-            pauseScreen();
-            return;
+            header("ALL PAYMENTS");
+
+            ArrayList<Booking> bookings = bookingService.getAllBookings();
+
+            if (bookings.isEmpty()) {
+
+                displayErrorMessage("NO BOOKINGS FOUND!");
+
+                pauseScreen();
+                return;
+            }
+
+            System.out.println("\n╔═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗");
+            displayCenteredText("PAYMENT RECORDS");
+            System.out.println("╠══════════╦══════════╦══════════════════════╦════════════════╦════════════════╦════════════════╦═══════════════╣");
+
+            System.out.println("║ PAY ID   ║ BOOKING  ║ CUSTOMER NAME        ║ TOTAL AMOUNT   ║ PAID AMOUNT    ║ BALANCE        ║ STATUS        ║");
+
+            System.out.println("╠══════════╬══════════╬══════════════════════╬════════════════╬════════════════╬════════════════╬═══════════════╣");
+
+            int paidCount = 0;
+            int unpaidCount = 0;
+            int cancelledCount = 0;
+
+            double totalAmount = 0;
+            double totalPaid = 0;
+            double totalBalance = 0;
+
+            for (Booking b : bookings) {
+
+                Customer c = getCustomer(b.getCustomerId());
+                Room r = getRoom(b.getRoomNumber());
+
+                String name = c == null
+                        ? "Unknown"
+                        : c.getFirstName() + " " + c.getLastName();
+
+                double bookingAmount = 0;
+
+                if (r != null) {
+
+                    long nights = ChronoUnit.DAYS.between(
+                            b.getCheckInDate(), b.getCheckOutDate());
+
+                    bookingAmount = r.getPrice() * nights;
+                }
+
+                Payment p = getPaymentByBookingId(b.getBookingId());
+
+                double paidAmount = p == null ? 0 : p.getAmount();
+                double balance = bookingAmount - paidAmount;
+
+                String status;
+
+                if (b.getStatus().equals("CANCELLED")) {
+
+                    status = "CANCELLED";
+                    cancelledCount++;
+
+                } else if (p == null) {
+
+                    status = "UNPAID";
+                    unpaidCount++;
+
+                } else if (paidAmount >= bookingAmount) {
+
+                    status = "PAID";
+                    paidCount++;
+                    balance = 0;
+
+                } else {
+
+                    status = "UNDERPAID";
+                    unpaidCount++;
+                }
+
+                if (balance < 0) {
+                    balance = 0;
+                }
+
+                totalAmount += bookingAmount;
+                totalPaid += paidAmount;
+                totalBalance += balance;
+
+                String payId = p == null
+                        ? "-"
+                        : String.valueOf(p.getPaymentId());
+
+                System.out.printf(
+                    "║ %-8s ║ %-8d ║ %-20s ║ PHP %-10.2f ║ PHP %-10.2f ║ PHP %-10.2f ║ %-13s ║%n",
+                    payId,
+                    b.getBookingId(),
+                    name,
+                    bookingAmount,
+                    paidAmount,
+                    balance,
+                    status
+                );
+            }
+
+            System.out.println("╚══════════╩══════════╩══════════════════════╩════════════════╩════════════════╩════════════════╩═══════════════╝");
+
+            displayTitle("PAYMENT SUMMARY");
+
+            System.out.println("║ Total Bookings      : " + bookings.size());
+            System.out.println("║ Paid Bookings       : " + paidCount);
+            System.out.println("║ Unpaid Bookings     : " + unpaidCount);
+            System.out.println("║ Cancelled Bookings  : " + cancelledCount);
+
+            System.out.printf("║ Total Amount        : PHP %.2f%n", totalAmount);
+            System.out.printf("║ Total Paid          : PHP %.2f%n", totalPaid);
+            System.out.printf("║ Total Balance       : PHP %.2f%n", totalBalance);
+
+            displayBottomBorder();
+
+        } catch (Exception e) {
+
+            displayError("retrieving payment records", e);
         }
-
-        System.out.println("\n╔═════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╗");
-        System.out.println("║                                                           PAYMENT RECORDS                                                 ║");
-        System.out.println("╠══════════╦══════════╦══════════════════════╦════════════════╦════════════════╦════════════════╦═══════════════╣");
-        System.out.println("║ PAY ID   ║ BOOKING  ║ CUSTOMER NAME        ║ TOTAL AMOUNT   ║ PAID AMOUNT    ║ BALANCE        ║ STATUS        ║");
-        System.out.println("╠══════════╬══════════╬══════════════════════╬════════════════╬════════════════╬════════════════╬═══════════════╣");
-
-        int paidCount = 0;
-        int unpaidCount = 0;
-        int cancelledCount = 0;
-
-        double totalAmount = 0;
-        double totalPaid = 0;
-        double totalBalance = 0;
-
-        for (Booking b : bookings) {
-
-            Customer c = getCustomer(b.getCustomerId());
-            Room r = getRoom(b.getRoomNumber());
-
-            String name = c == null
-                    ? "Unknown"
-                    : c.getFirstName() + " " + c.getLastName();
-
-            double bookingAmount = 0;
-
-            if (r != null) {
-                long nights = ChronoUnit.DAYS.between(
-                        b.getCheckInDate(), b.getCheckOutDate());
-
-                bookingAmount = r.getPrice() * nights;
-            }
-
-            Payment p = getPaymentByBookingId(b.getBookingId());
-
-            double paidAmount = p == null ? 0 : p.getAmount();
-            double balance = bookingAmount - paidAmount;
-
-            String status;
-
-            if (b.getStatus().equals("CANCELLED")) {
-                status = "CANCELLED";
-                cancelledCount++;
-            }
-            else if (p == null) {
-                status = "UNPAID";
-                unpaidCount++;
-            }
-            else if (paidAmount >= bookingAmount) {
-                status = "PAID";
-                paidCount++;
-                balance = 0;
-            }
-            else {
-                status = "UNDERPAID";
-                unpaidCount++;
-            }
-
-            if (balance < 0) {
-                balance = 0;
-            }
-
-            totalAmount += bookingAmount;
-            totalPaid += paidAmount;
-            totalBalance += balance;
-
-            String payId = p == null ? "-" : String.valueOf(p.getPaymentId());
-
-            System.out.printf(
-                "║ %-8s ║ %-8d ║ %-20s ║ PHP %-10.2f ║ PHP %-10.2f ║ PHP %-10.2f ║ %-13s ║%n",
-                payId,
-                b.getBookingId(),
-                name,
-                bookingAmount,
-                paidAmount,
-                balance,
-                status
-            );
-        }
-
-        System.out.println("╚══════════╩══════════╩══════════════════════╩════════════════╩════════════════╩════════════════╩═══════════════╝");
-
-        System.out.println("\nPAYMENT SUMMARY");
-        System.out.println("Total Bookings     : " + bookings.size());
-        System.out.println("Paid Bookings     : " + paidCount);
-        System.out.println("Unpaid Bookings   : " + unpaidCount);
-        System.out.println("Cancelled Bookings : " + cancelledCount);
-        System.out.printf("Total Amount      : PHP %.2f%n", totalAmount);
-        System.out.printf("Total Paid        : PHP %.2f%n", totalPaid);
-        System.out.printf("Total Balance     : PHP %.2f%n", totalBalance);
 
         pauseScreen();
-    
     }
 
     // SEARCH PAYMENT
     private void searchPayment() {
+
         clearScreen();
-        header("SEARCH PAYMENT");
 
-        Payment p = paymentService.searchPayment(readInt("║  Enter Payment ID: "));
+        try {
 
-        if (p != null) displayReceipt(p);
-        else System.out.println("\nPayment not found!");
+            header("SEARCH PAYMENT");
+
+            int id = readInt("║ Enter Payment ID: ");
+
+            Payment p = paymentService.searchPayment(id);
+
+            if (p != null) {
+
+                displayReceipt(p);
+
+            } else {
+
+                displayErrorMessage("PAYMENT NOT FOUND!");
+            }
+
+        } catch (Exception e) {
+
+            displayError("searching payment", e);
+        }
 
         pauseScreen();
     }
 
     // UPDATE PAYMENT
     private void updatePayment() {
+
         clearScreen();
-        header("UPDATE PAYMENT");
 
-        int id = readInt("║  Enter Payment ID: ");
-        Payment p = paymentService.searchPayment(id);
+        try {
 
-        if (p == null) {
-            System.out.println("\nPayment not found!");
-            pauseScreen();
-            return;
-        }
+            header("UPDATE PAYMENT");
 
-        displayReceipt(p);
+            int id = readInt("║ Enter Payment ID: ");
 
-        System.out.println("\n╔══════════════════════════════════════════════════╗");
-        System.out.println("║                  UPDATE PAYMENT                  ║");
-        System.out.println("╠══════════════════════════════════════════════════╣");
-        System.out.println("║                                                  ║");
-        System.out.println("║       Only payment information can be changed.   ║");
-        System.out.println("║                                                  ║");
-        System.out.println("╚══════════════════════════════════════════════════╝");
+            Payment p = paymentService.searchPayment(id);
 
-        double amount = readAmount("New Payment Amount: PHP ");
-        String method = getMethod();
+            if (p == null) {
 
-        System.out.print("New Payment Date (YYYY-MM-DD): ");
-        LocalDate date = LocalDate.parse(scanner.nextLine());
+                displayErrorMessage("PAYMENT NOT FOUND!");
 
-        if (!confirm("Confirm payment update?")) {
-            System.out.println("Payment update cancelled.");
-            pauseScreen();
-            return;
-        }
+                pauseScreen();
+                return;
+            }
 
-        if (paymentService.updatePayment(id, amount, method, date)) {
-            System.out.println("\n[SUCCESS] Payment successfully updated!");
-            displayReceipt(paymentService.searchPayment(id));
-        } else {
-            System.out.println("\n[ERROR] Unable to update payment.");
+            displayReceipt(p);
+
+            displayTitle("UPDATE PAYMENT");
+
+            displayCenteredText("ONLY PAYMENT INFORMATION CAN BE CHANGED.");
+            displayBottomBorder();
+
+            double amount = readAmount("New Payment Amount: PHP ");
+
+            String method = getMethod();
+
+            LocalDate date = readDate("New Payment Date (YYYY-MM-DD): ");
+
+            if (!confirm("Confirm payment update?")) {
+
+                System.out.println("Payment update cancelled.");
+
+                pauseScreen();
+                return;
+            }
+
+            if (paymentService.updatePayment(id, amount, method, date)) {
+
+                System.out.println("\n[SUCCESS] Payment successfully updated!");
+
+                displayReceipt(paymentService.searchPayment(id));
+
+            } else {
+
+                System.out.println("\n[ERROR] Unable to update payment.");
+            }
+
+        } catch (Exception e) {
+
+            displayError("updating payment", e);
         }
 
         pauseScreen();
@@ -470,42 +627,131 @@ public class PaymentMenu {
 
     // DELETE PAYMENT
     private void deletePayment() {
+
         clearScreen();
-        header("DELETE PAYMENT");
 
-        int id = readInt("║  Enter Payment ID: ");
-        Payment p = paymentService.searchPayment(id);
+        try {
 
-        if (p == null) {
-            System.out.println("\nPayment not found!");
-            pauseScreen();
-            return;
-        }
+            header("DELETE PAYMENT");
 
-        displayReceipt(p);
+            int id = readInt("║ Enter Payment ID: ");
 
-        if (confirm("Are you sure you want to delete this payment?")) {
-            if (paymentService.deletePayment(id)) {
-                System.out.println("\n[SUCCESS] Payment successfully deleted!");
-                System.out.println("The booking is now UNPAID.");
-            } else {
-                System.out.println("\n[ERROR] Unable to delete payment!");
+            Payment p = paymentService.searchPayment(id);
+
+            if (p == null) {
+
+                displayErrorMessage("PAYMENT NOT FOUND!");
+
+                pauseScreen();
+                return;
             }
-        } else {
-            System.out.println("\nPayment deletion cancelled.");
+
+            displayReceipt(p);
+
+            if (confirm("Are you sure you want to delete this payment?")) {
+
+                if (paymentService.deletePayment(id)) {
+
+                    System.out.println("\n[SUCCESS] Payment successfully deleted!");
+                    System.out.println("The booking is now UNPAID.");
+
+                } else {
+
+                    System.out.println("\n[ERROR] Unable to delete payment!");
+                }
+
+            } else {
+
+                System.out.println("\nPayment deletion cancelled.");
+            }
+
+        } catch (Exception e) {
+
+            displayError("deleting payment", e);
         }
 
         pauseScreen();
     }
 
+    // REUSABLE LAYOUT METHODS
+
+    // DISPLAY TOP BORDER
+    private void displayTopBorder() {
+        System.out.println("\n╔══════════════════════════════════════════════════╗");
+    }
+
+    // DISPLAY MIDDLE BORDER
+    private void displayMiddleBorder() {
+        System.out.println("╠══════════════════════════════════════════════════╣");
+    }
+
+    // DISPLAY BOTTOM BORDER
+    private void displayBottomBorder() {
+        System.out.println("╚══════════════════════════════════════════════════╝");
+    }
+
+    // DISPLAY BLANK LINE
+    private void displayBlankLine() {
+        System.out.println("║                                                  ║");
+    }
+
+    // DISPLAY CENTERED TEXT
+    private void displayCenteredText(String text) {
+
+        int width = 50;
+        int spaces = width - text.length();
+
+        if (spaces < 0) {
+            spaces = 0;
+        }
+
+        int left = spaces / 2;
+        int right = spaces - left;
+
+        System.out.println(
+            "║" + " ".repeat(left) + text + " ".repeat(right) + "║"
+        );
+    }
+
+    // DISPLAY TITLE
+    private void displayTitle(String title) {
+
+        displayTopBorder();
+        displayCenteredText(title);
+        displayMiddleBorder();
+    }
+
+    // DISPLAY ERROR MESSAGE
+    private void displayErrorMessage(String message) {
+
+        displayMiddleBorder();
+        displayCenteredText(message);
+        displayBottomBorder();
+    }
+
+    // DISPLAY EXCEPTION
+    private void displayError(String operation, Exception e) {
+
+        displayMiddleBorder();
+        displayCenteredText("AN ERROR OCCURRED!");
+        displayMiddleBorder();
+
+        System.out.println("║ Operation: " + operation);
+        System.out.println("║ Error: " + e.getMessage());
+
+        displayBottomBorder();
+    }
+
     // CLEAR SCREEN
     private void clearScreen() {
+
         System.out.print("\033[H\033[2J");
         System.out.flush();
     }
 
     // PAUSE SCREEN
     private void pauseScreen() {
+
         System.out.print("\nPress Enter to continue...");
         scanner.nextLine();
     }

@@ -5,6 +5,7 @@ import java.util.Scanner;
 import java.util.ArrayList;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.time.format.DateTimeParseException;
 
 import hotel.model.Booking;
 import hotel.model.Payment;
@@ -25,7 +26,11 @@ public class BookingMenu {
     private RoomService roomService;
 
     // Constructor
-    public BookingMenu(Scanner scanner, BookingService bookingService, PaymentService paymentService, CustomerService customerService, RoomService roomService) {
+    public BookingMenu(Scanner scanner,
+            BookingService bookingService,
+            PaymentService paymentService,
+            CustomerService customerService,
+            RoomService roomService) {
 
         this.scanner = scanner;
         this.bookingService = bookingService;
@@ -45,24 +50,37 @@ public class BookingMenu {
 
             System.out.println("║                                                  ║");
             System.out.println("║          [1]  Add New Booking                    ║");
-            System.out.println("║          [2]  View All Bookings                  ║");
-            System.out.println("║          [3]  Search Booking                     ║");
-            System.out.println("║          [4]  Update Booking                     ║");
-            System.out.println("║          [5]  Cancel Booking                     ║");
-            System.out.println("║          [6]  Complete Booking                   ║");
-            System.out.println("║          [7]  Back to Main Menu                  ║");
+            System.out.println("║          [2]  View All Bookings                   ║");
+            System.out.println("║          [3]  Search Booking                      ║");
+            System.out.println("║          [4]  Update Booking                      ║");
+            System.out.println("║          [5]  Cancel Booking                      ║");
+            System.out.println("║          [6]  Complete Booking                    ║");
+            System.out.println("║          [7]  Back to Main Menu                   ║");
             System.out.println("║                                                  ║");
-            System.out.println("╠══════════════════════════════════════════════════╣");
+
+            divider();
 
             choice = readInt("║  Enter your choice: ");
 
             switch (choice) {
-                case 1: addBooking(); break;
-                case 2: viewBookings(); break;
-                case 3: searchBooking(); break;
-                case 4: updateBooking(); break;
-                case 5: cancelBooking(); break;
-                case 6: completeBooking(); break;
+                case 1:
+                    addBooking();
+                    break;
+                case 2:
+                    viewBookings();
+                    break;
+                case 3:
+                    searchBooking();
+                    break;
+                case 4:
+                    updateBooking();
+                    break;
+                case 5:
+                    cancelBooking();
+                    break;
+                case 6:
+                    completeBooking();
+                    break;
                 case 7:
                     System.out.println("\nReturning to Main Menu...");
                     break;
@@ -74,6 +92,11 @@ public class BookingMenu {
         } while (choice != 7);
     }
 
+    // REUSABLE DIVIDER
+    private void divider() {
+        System.out.println("╠══════════════════════════════════════════════════╣");
+    }
+
     // HEADER
     private void header(String title) {
 
@@ -82,13 +105,17 @@ public class BookingMenu {
         System.out.println("║                 THE ISLAND SUITES                ║");
         System.out.println("║              LUXURY HOTEL MANAGEMENT             ║");
         System.out.println("║                                                  ║");
-        System.out.println("╠══════════════════════════════════════════════════╣");
+
+        divider();
+
         System.out.println("║                                                  ║");
         System.out.printf("║                 %-32s ║%n", title);
         System.out.println("║                                                  ║");
-        System.out.println("╠══════════════════════════════════════════════════╣");
+
+        divider();
     }
 
+    // SECTION
     private void section(String title) {
 
         System.out.println("\n==================================================");
@@ -96,54 +123,222 @@ public class BookingMenu {
         System.out.println("==================================================");
     }
 
-    // INPUT METHODS
+    // INTEGER INPUT
     private int readInt(String message) {
 
         while (true) {
-            System.out.print(message);
+            try {
+                System.out.print(message);
 
-        try {
-            return Integer.parseInt(scanner.nextLine());
+                String input = scanner.nextLine().trim();
 
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid input! Enter a whole number.");
+                if (input.isEmpty()) {
+                    throw new IllegalArgumentException(
+                        "Input cannot be empty."
+                    );
+                }
 
-        } catch (Exception e) {
-            System.out.println("Unexpected error: " + e.getMessage());
-        }
+                return Integer.parseInt(input);
+
+            } catch (NumberFormatException e) {
+                System.out.println(
+                    "Invalid input! Enter a whole number."
+                );
+
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+
+            } catch (Exception e) {
+                System.out.println(
+                    "Unexpected error: " + e.getMessage()
+                );
+            }
         }
     }
 
+    // POSITIVE INTEGER INPUT
+    private int readPositiveInt(String message) {
+
+        while (true) {
+            try {
+                int number = readInt(message);
+
+                if (number <= 0) {
+                    throw new IllegalArgumentException(
+                        "Number must be greater than zero."
+                    );
+                }
+
+                return number;
+
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+
+            } catch (Exception e) {
+                System.out.println(
+                    "Unexpected error: " + e.getMessage()
+                );
+            }
+        }
+    }
+
+    // AMOUNT INPUT
     private double readAmount(String message) {
 
         while (true) {
-            System.out.print(message);
+            try {
+                System.out.print(message);
 
-           try {
-            double amount = Double.parseDouble(scanner.nextLine());
+                String input = scanner.nextLine().trim();
 
-            if (amount > 0) {
+                if (input.isEmpty()) {
+                    throw new IllegalArgumentException(
+                        "Amount cannot be empty."
+                    );
+                }
+
+                double amount = Double.parseDouble(input);
+
+                if (!Double.isFinite(amount)) {
+                    throw new IllegalArgumentException(
+                        "Enter a valid finite amount."
+                    );
+                }
+
+                if (amount <= 0) {
+                    throw new IllegalArgumentException(
+                        "Amount must be greater than zero."
+                    );
+                }
+
                 return amount;
-            }
-
-                System.out.println("Amount must be greater than zero.");
 
             } catch (NumberFormatException e) {
                 System.out.println("Invalid amount!");
 
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+
             } catch (Exception e) {
-                System.out.println("Unexpected error: " + e.getMessage());
+                System.out.println(
+                    "Unexpected error: " + e.getMessage()
+                );
             }
         }
     }
 
+    // TEXT INPUT
+    private String readText(String message) {
+
+        while (true) {
+            try {
+                System.out.print(message);
+
+                String input = scanner.nextLine().trim();
+
+                if (input.isEmpty()) {
+                    throw new IllegalArgumentException(
+                        "This field cannot be empty."
+                    );
+                }
+
+                return input;
+
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+
+            } catch (Exception e) {
+                System.out.println(
+                    "Unexpected error: " + e.getMessage()
+                );
+            }
+        }
+    }
+
+    // DATE INPUT
+    private LocalDate readDate(String message) {
+
+        while (true) {
+            try {
+                String input = readText(message);
+
+                return LocalDate.parse(input);
+
+            } catch (DateTimeParseException e) {
+                System.out.println("Invalid date!");
+                System.out.println(
+                    "Use YYYY-MM-DD. Example: 2026-12-25"
+                );
+
+            } catch (Exception e) {
+                System.out.println(
+                    "Unexpected error: " + e.getMessage()
+                );
+            }
+        }
+    }
+
+    // CHECK-OUT DATE INPUT
+    private LocalDate readCheckOutDate(
+            String message, LocalDate checkIn) {
+
+        while (true) {
+            try {
+                LocalDate checkOut = readDate(message);
+
+                if (!checkOut.isAfter(checkIn)) {
+                    throw new IllegalArgumentException(
+                        "Check-out must be after check-in."
+                    );
+                }
+
+                return checkOut;
+
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+
+            } catch (Exception e) {
+                System.out.println(
+                    "Unexpected error: " + e.getMessage()
+                );
+            }
+        }
+    }
+
+    // CONFIRMATION INPUT
     private boolean confirm(String message) {
 
-        System.out.print("\n" + message + " (Y/N): ");
-        return scanner.nextLine().equalsIgnoreCase("Y");
+        while (true) {
+            try {
+                System.out.print("\n" + message + " (Y/N): ");
+
+                String answer = scanner.nextLine().trim();
+
+                if (answer.equalsIgnoreCase("Y")) {
+                    return true;
+                }
+
+                if (answer.equalsIgnoreCase("N")) {
+                    return false;
+                }
+
+                throw new IllegalArgumentException(
+                    "Please enter only Y or N."
+                );
+
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+
+            } catch (Exception e) {
+                System.out.println(
+                    "Unexpected error: " + e.getMessage()
+                );
+            }
+        }
     }
 
     // CUSTOMER AND ROOM INFORMATION
+
     private Customer getCustomer(int customerId) {
         return customerService.findCustomerById(customerId);
     }
@@ -156,7 +351,9 @@ public class BookingMenu {
 
         Customer customer = getCustomer(customerId);
 
-        if (customer == null) return "Unknown Customer";
+        if (customer == null) {
+            return "Unknown Customer";
+        }
 
         return customer.getFirstName() + " " + customer.getLastName();
     }
@@ -165,10 +362,14 @@ public class BookingMenu {
 
         Room room = getRoom(booking.getRoomNumber());
 
-        if (room == null) return 0;
+        if (room == null) {
+            return 0;
+        }
 
         long nights = ChronoUnit.DAYS.between(
-                booking.getCheckInDate(), booking.getCheckOutDate());
+            booking.getCheckInDate(),
+            booking.getCheckOutDate()
+        );
 
         return room.getPrice() * nights;
     }
@@ -180,20 +381,26 @@ public class BookingMenu {
         System.out.println("║                              CUSTOMER RECORDS                              ║");
         System.out.println("╠══════════╦══════════════════════╦══════════════════════╦═══════════════════╣");
         System.out.println("║ ID       ║ LAST NAME            ║ FIRST NAME           ║ CONTACT NUMBER    ║");
-        System.out.println("╠══════════╬══════════════════════╬══════════════════════╬═══════════════════╣");
+
+        divider();
 
         for (Customer c : customerService.getAllCustomers()) {
 
-            System.out.printf("║ %-8d ║ %-20s ║ %-20s ║ %-17s ║%n",
-                    c.getCustomerId(),
-                    c.getLastName(),
-                    c.getFirstName(),
-                    c.getContactNumber());
+            System.out.printf(
+                "║ %-8d ║ %-20s ║ %-20s ║ %-17s ║%n",
+                c.getCustomerId(),
+                c.getLastName(),
+                c.getFirstName(),
+                c.getContactNumber()
+            );
         }
 
         System.out.println("╚══════════╩══════════════════════╩══════════════════════╩═══════════════════╝");
 
-        System.out.println("Total Customers: " + customerService.getAllCustomers().size());
+        System.out.println(
+            "Total Customers: " +
+            customerService.getAllCustomers().size()
+        );
     }
 
     // DISPLAY AVAILABLE ROOMS
@@ -203,27 +410,36 @@ public class BookingMenu {
         System.out.println("║                      AVAILABLE ROOM RECORDS                      ║");
         System.out.println("╠════════════╦══════════════════════╦══════════════════╦═══════════╣");
         System.out.println("║ ROOM NO.   ║ ROOM TYPE            ║ PRICE            ║ STATUS    ║");
-        System.out.println("╠════════════╬══════════════════════╬══════════════════╬═══════════╣");
+
+        divider();
 
         for (Room r : roomService.getAvailableRooms()) {
 
-            System.out.printf("║ %-10d ║ %-20s ║ PHP %-12.2f ║ %-9s ║%n",
-                    r.getRoomNumber(),
-                    r.getRoomType(),
-                    r.getPrice(),
-                    "Available");
+            System.out.printf(
+                "║ %-10d ║ %-20s ║ PHP %-12.2f ║ %-9s ║%n",
+                r.getRoomNumber(),
+                r.getRoomType(),
+                r.getPrice(),
+                "Available"
+            );
         }
 
         System.out.println("╚════════════╩══════════════════════╩══════════════════╩═══════════╝");
 
-        System.out.println("Total Available Rooms: " + roomService.getAvailableRooms().size());
+        System.out.println(
+            "Total Available Rooms: " +
+            roomService.getAvailableRooms().size()
+        );
     }
 
     // PAYMENT INFORMATION
     private Payment getPayment(int bookingId) {
 
         for (Payment p : paymentService.getAllPayments()) {
-            if (p.getBookingId() == bookingId) return p;
+
+            if (p.getBookingId() == bookingId) {
+                return p;
+            }
         }
 
         return null;
@@ -245,19 +461,34 @@ public class BookingMenu {
 
         System.out.println("Booking ID      : " + b.getBookingId());
         System.out.println("Customer ID     : " + b.getCustomerId());
-        System.out.println("Customer Name   : " + getCustomerName(b.getCustomerId()));
+        System.out.println(
+            "Customer Name   : " + getCustomerName(b.getCustomerId())
+        );
         System.out.println("Room Number     : " + b.getRoomNumber());
 
         if (room != null) {
             System.out.println("Room Type       : " + room.getRoomType());
-            System.out.printf("Price per Night : PHP %.2f%n", room.getPrice());
+
+            System.out.printf(
+                "Price per Night : PHP %.2f%n",
+                room.getPrice()
+            );
         }
 
         System.out.println("Check-in Date   : " + b.getCheckInDate());
         System.out.println("Check-out Date  : " + b.getCheckOutDate());
-        System.out.printf("Total Amount    : PHP %.2f%n", calculateTotal(b));
+
+        System.out.printf(
+            "Total Amount    : PHP %.2f%n",
+            calculateTotal(b)
+        );
+
         System.out.println("Booking Status  : " + b.getStatus());
-        System.out.println("Payment Status  : " + getPaymentStatus(b.getBookingId()));
+
+        System.out.println(
+            "Payment Status  : " +
+            getPaymentStatus(b.getBookingId())
+        );
 
         Payment p = getPayment(b.getBookingId());
 
@@ -266,13 +497,26 @@ public class BookingMenu {
             section("PAYMENT DETAILS");
 
             System.out.println("Payment ID      : " + p.getPaymentId());
-            System.out.printf("Amount          : PHP %.2f%n", p.getAmount());
+
+            System.out.printf(
+                "Amount          : PHP %.2f%n",
+                p.getAmount()
+            );
+
             System.out.println("Payment Method  : " + p.getPaymentMethod());
             System.out.println("Payment Date    : " + p.getPaymentDate());
 
             if (p.getPaymentMethod().equalsIgnoreCase("Cash")) {
-                System.out.printf("Cash Received   : PHP %.2f%n", p.getCashReceived());
-                System.out.printf("Change          : PHP %.2f%n", p.getChange());
+
+                System.out.printf(
+                    "Cash Received   : PHP %.2f%n",
+                    p.getCashReceived()
+                );
+
+                System.out.printf(
+                    "Change          : PHP %.2f%n",
+                    p.getChange()
+                );
             }
 
             System.out.println("Payment Status  : " + p.getStatus());
@@ -293,11 +537,13 @@ public class BookingMenu {
         displayCustomers();
 
         if (customerService.getAllCustomers().isEmpty()) {
+            System.out.println("No customer records available.");
             pauseScreen();
             return;
         }
 
-        int customerId = readInt("\nEnter Customer ID: ");
+        int customerId = readPositiveInt("\nEnter Customer ID: ");
+
         Customer customer = getCustomer(customerId);
 
         if (customer == null) {
@@ -309,11 +555,13 @@ public class BookingMenu {
         displayAvailableRooms();
 
         if (roomService.getAvailableRooms().isEmpty()) {
+            System.out.println("No available rooms.");
             pauseScreen();
             return;
         }
 
-        int roomNumber = readInt("\nEnter Room Number: ");
+        int roomNumber = readPositiveInt("\nEnter Room Number: ");
+
         Room room = getRoom(roomNumber);
 
         if (room == null || !room.isAvailable()) {
@@ -322,15 +570,17 @@ public class BookingMenu {
             return;
         }
 
+        // BOOKING DATES
         section("BOOKING DATES");
 
-        System.out.print("║ Check-in Date  : ");
-        LocalDate checkIn = LocalDate.parse(scanner.nextLine());
+        LocalDate checkIn = readDate("║ Check-in Date  : ");
 
-        System.out.print("║ Check-out Date : ");
-        LocalDate checkOut = LocalDate.parse(scanner.nextLine());
+        LocalDate checkOut = readCheckOutDate(
+            "║ Check-out Date : ", checkIn
+        );
 
         long nights = ChronoUnit.DAYS.between(checkIn, checkOut);
+
         double total = room.getPrice() * nights;
 
         // PAYMENT OPTION
@@ -351,12 +601,16 @@ public class BookingMenu {
         } while (paymentChoice != 1 && paymentChoice != 2);
 
         String method = "Not yet paid";
+
         double cash = 0;
         double change = 0;
 
         if (paymentChoice == 1) {
 
-            System.out.printf("\nBooking Amount: PHP %.2f%n", total);
+            System.out.printf(
+                "\nBooking Amount: PHP %.2f%n",
+                total
+            );
 
             System.out.println("[1] Cash");
             System.out.println("[2] GCash");
@@ -373,7 +627,9 @@ public class BookingMenu {
 
             } while (option < 1 || option > 3);
 
-            method = option == 1 ? "Cash" : option == 2 ? "GCash" : "Card";
+            method = option == 1 ? "Cash"
+                   : option == 2 ? "GCash"
+                   : "Card";
 
             if (option == 1) {
 
@@ -394,23 +650,48 @@ public class BookingMenu {
         section("BOOKING SUMMARY");
 
         System.out.println("Booking ID      : " + bookingId);
-        System.out.println("Customer        : " + customer.getFirstName()+ " " + customer.getLastName());
+
+        System.out.println(
+            "Customer        : " +
+            customer.getFirstName() + " " + customer.getLastName()
+        );
+
         System.out.println("Room Number     : " + roomNumber);
         System.out.println("Room Type       : " + room.getRoomType());
-        System.out.printf("Price per Night : PHP %.2f%n", room.getPrice());
+
+        System.out.printf(
+            "Price per Night : PHP %.2f%n",
+            room.getPrice()
+        );
+
         System.out.println("Check-in        : " + checkIn);
         System.out.println("Check-out       : " + checkOut);
         System.out.println("Number of Nights: " + nights);
-        System.out.printf("Total Amount    : PHP %.2f%n", total);
+
+        System.out.printf(
+            "Total Amount    : PHP %.2f%n",
+            total
+        );
+
         System.out.println("Payment Method  : " + method);
 
         if (paymentChoice == 1 && method.equals("Cash")) {
-            System.out.printf("Cash Received   : PHP %.2f%n", cash);
-            System.out.printf("Change          : PHP %.2f%n", change);
+
+            System.out.printf(
+                "Cash Received   : PHP %.2f%n",
+                cash
+            );
+
+            System.out.printf(
+                "Change          : PHP %.2f%n",
+                change
+            );
         }
 
-        System.out.println("Payment Status  : "
-                + (paymentChoice == 1 ? "PAID" : "UNPAID"));
+        System.out.println(
+            "Payment Status  : " +
+            (paymentChoice == 1 ? "PAID" : "UNPAID")
+        );
 
         if (!confirm("Confirm this booking?")) {
             System.out.println("Booking was not saved.");
@@ -419,7 +700,8 @@ public class BookingMenu {
         }
 
         Booking booking = new Booking(
-                bookingId, customerId, roomNumber, checkIn, checkOut);
+            bookingId, customerId, roomNumber, checkIn, checkOut
+        );
 
         if (!bookingService.addBooking(booking)) {
             System.out.println("Unable to save booking!");
@@ -430,16 +712,22 @@ public class BookingMenu {
         if (paymentChoice == 1) {
 
             Payment payment = new Payment(
-                    paymentService.getNextPaymentId(),
-                    bookingId, total, method, LocalDate.now(), cash, change);
+                paymentService.getNextPaymentId(),
+                bookingId, total, method, LocalDate.now(), cash, change
+            );
 
             if (paymentService.addPayment(payment)) {
-                System.out.println("\n[SUCCESS] Booking and payment saved!");
+                System.out.println(
+                    "\n[SUCCESS] Booking and payment saved!"
+                );
             } else {
-                System.out.println("\n[WARNING] Booking saved, but payment failed.");
+                System.out.println(
+                    "\n[WARNING] Booking saved, but payment failed."
+                );
             }
 
         } else {
+
             System.out.println("\n[SUCCESS] Booking saved!");
             System.out.println("Payment can be settled later.");
         }
@@ -459,19 +747,21 @@ public class BookingMenu {
         System.out.println("║                                                        BOOKING RECORDS                                                        ║");
         System.out.println("╠══════════╦══════════════════════╦═══════════╦══════════════╦══════════════╦════════════════╦════════════╦════════════════╣");
         System.out.println("║ BOOKING  ║ CUSTOMER NAME        ║ ROOM NO.  ║ CHECK-IN     ║ CHECK-OUT    ║ TOTAL          ║ STATUS     ║ PAYMENT        ║");
-        System.out.println("╠══════════╬══════════════════════╬═══════════╬══════════════╬══════════════╬════════════════╬════════════╬════════════════╣");
+        divider();
 
         for (Booking b : bookings) {
 
-            System.out.printf("║ %-8d ║ %-20s ║ %-9d ║ %-12s ║ %-12s ║ PHP %-10.2f ║ %-10s ║ %-14s ║%n",
-                    b.getBookingId(),
-                    getCustomerName(b.getCustomerId()),
-                    b.getRoomNumber(),
-                    b.getCheckInDate(),
-                    b.getCheckOutDate(),
-                    calculateTotal(b),
-                    b.getStatus(),
-                    getPaymentStatus(b.getBookingId()));
+            System.out.printf(
+                "║ %-8d ║ %-20s ║ %-9d ║ %-12s ║ %-12s ║ PHP %-10.2f ║ %-10s ║ %-14s ║%n",
+                b.getBookingId(),
+                getCustomerName(b.getCustomerId()),
+                b.getRoomNumber(),
+                b.getCheckInDate(),
+                b.getCheckOutDate(),
+                calculateTotal(b),
+                b.getStatus(),
+                getPaymentStatus(b.getBookingId())
+            );
         }
 
         System.out.println("╚══════════╩══════════════════════╩═══════════╩══════════════╩══════════════╩════════════════╩════════════╩════════════════╝");
@@ -487,7 +777,8 @@ public class BookingMenu {
         clearScreen();
         header("SEARCH BOOKING");
 
-        int id = readInt("║  Enter Booking ID: ");
+        int id = readPositiveInt("║  Enter Booking ID: ");
+
         Booking b = bookingService.searchBooking(id);
 
         if (b != null) {
@@ -505,7 +796,8 @@ public class BookingMenu {
         clearScreen();
         header("UPDATE BOOKING");
 
-        int id = readInt("║  Enter Booking ID: ");
+        int id = readPositiveInt("║  Enter Booking ID: ");
+
         Booking b = bookingService.searchBooking(id);
 
         if (b == null || !b.getStatus().equals("ACTIVE")) {
@@ -524,7 +816,7 @@ public class BookingMenu {
 
         displayCustomers();
 
-        int customerId = readInt("\nNew Customer ID: ");
+        int customerId = readPositiveInt("\nNew Customer ID: ");
 
         if (getCustomer(customerId) == null) {
             System.out.println("Customer not found!");
@@ -537,7 +829,7 @@ public class BookingMenu {
         System.out.println("║                         ROOM SELECTION                            ║");
         System.out.println("╠════════════╦══════════════════════╦══════════════════╦════════════╣");
         System.out.println("║ ROOM NO.   ║ ROOM TYPE            ║ PRICE            ║ STATUS     ║");
-        System.out.println("╠════════════╬══════════════════════╬══════════════════╬════════════╣");
+        divider();
 
         for (Room r : roomService.getAllRooms()) {
 
@@ -546,23 +838,25 @@ public class BookingMenu {
                 String status = r.getRoomNumber() == b.getRoomNumber()
                         ? "CURRENT ROOM" : "AVAILABLE";
 
-                System.out.printf("║ %-10d ║ %-20s ║ PHP %-12.2f ║ %-10s ║%n",
-                        r.getRoomNumber(),
-                        r.getRoomType(),
-                        r.getPrice(),
-                        status);
+                System.out.printf(
+                    "║ %-10d ║ %-20s ║ PHP %-12.2f ║ %-10s ║%n",
+                    r.getRoomNumber(),
+                    r.getRoomType(),
+                    r.getPrice(),
+                    status
+                );
             }
         }
 
         System.out.println("╚════════════╩══════════════════════╩══════════════════╩════════════╝");
 
-        int roomNumber = readInt("\nNew Room Number: ");
+        int roomNumber = readPositiveInt("\nNew Room Number: ");
 
-        System.out.print("New Check-in Date  : ");
-        LocalDate checkIn = LocalDate.parse(scanner.nextLine());
+        LocalDate checkIn = readDate("New Check-in Date  : ");
 
-        System.out.print("New Check-out Date : ");
-        LocalDate checkOut = LocalDate.parse(scanner.nextLine());
+        LocalDate checkOut = readCheckOutDate(
+            "New Check-out Date : ", checkIn
+        );
 
         if (!confirm("Confirm booking update?")) {
             System.out.println("Update cancelled.");
@@ -570,11 +864,16 @@ public class BookingMenu {
             return;
         }
 
-        if (bookingService.updateBooking(id, customerId, roomNumber,
-                checkIn, checkOut)) {
+        if (bookingService.updateBooking(
+                id, customerId, roomNumber, checkIn, checkOut)) {
 
-            System.out.println("\n[SUCCESS] Booking successfully updated!");
-            System.out.println("Please check the payment amount if the total changed.");
+            System.out.println(
+                "\n[SUCCESS] Booking successfully updated!"
+            );
+
+            System.out.println(
+                "Please check the payment amount if the total changed."
+            );
 
         } else {
             System.out.println("\n[ERROR] Unable to update booking.");
@@ -589,7 +888,8 @@ public class BookingMenu {
         clearScreen();
         header("CANCEL BOOKING");
 
-        int id = readInt("║  Enter Booking ID: ");
+        int id = readPositiveInt("║  Enter Booking ID: ");
+
         Booking b = bookingService.searchBooking(id);
 
         if (b == null || !b.getStatus().equals("ACTIVE")) {
@@ -603,8 +903,13 @@ public class BookingMenu {
         if (confirm("Are you sure you want to cancel this booking?")) {
 
             if (bookingService.cancelBooking(id)) {
+
                 System.out.println("\n[SUCCESS] Booking cancelled!");
-                System.out.println("Room " + b.getRoomNumber() + " is now available.");
+
+                System.out.println(
+                    "Room " + b.getRoomNumber() + " is now available."
+                );
+
             } else {
                 System.out.println("\nUnable to cancel booking!");
             }
@@ -622,7 +927,8 @@ public class BookingMenu {
         clearScreen();
         header("COMPLETE BOOKING");
 
-        int id = readInt("║  Enter Booking ID: ");
+        int id = readPositiveInt("║  Enter Booking ID: ");
+
         Booking b = bookingService.searchBooking(id);
 
         if (b == null || !b.getStatus().equals("ACTIVE")) {
@@ -636,8 +942,13 @@ public class BookingMenu {
         if (confirm("Are you sure you want to complete this booking?")) {
 
             if (bookingService.completeBooking(id)) {
+
                 System.out.println("\n[SUCCESS] Booking completed!");
-                System.out.println("Room " + b.getRoomNumber() + " is now available.");
+
+                System.out.println(
+                    "Room " + b.getRoomNumber() + " is now available."
+                );
+
             } else {
                 System.out.println("\nUnable to complete booking!");
             }
@@ -652,15 +963,29 @@ public class BookingMenu {
     // CLEAR SCREEN
     private void clearScreen() {
 
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
+        try {
+            System.out.print("\033[H\033[2J");
+            System.out.flush();
+
+        } catch (Exception e) {
+            System.out.println(
+                "Unable to clear screen: " + e.getMessage()
+            );
+        }
     }
 
     // PAUSE SCREEN
     private void pauseScreen() {
 
-        System.out.print("\nPress Enter to continue...");
-        scanner.nextLine();
+        try {
+            System.out.print("\nPress Enter to continue...");
+            scanner.nextLine();
+
+        } catch (Exception e) {
+            System.out.println(
+                "Unable to pause screen: " + e.getMessage()
+            );
+        }
     }
 
 }
